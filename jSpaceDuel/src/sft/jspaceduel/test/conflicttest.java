@@ -10,6 +10,6 @@ package sft.jspaceduel.test;
  */
 public class conflicttest {
     public static void main(String[] args) {
-        System.out.println("Conflict line two.");
+        System.out.println("GIT conflict test");
     }
 }
