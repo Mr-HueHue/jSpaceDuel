@@ -11,9 +11,11 @@ public class Initlibraries {
 
     public static void addlwjgl() {
         try {
-            System.out.println(System.getProperty("os.name"));
+            /*System.out.println(System.getProperty("os.name"));
             System.out.println(System.getProperty("java.library.path"));
             System.out.println(System.getProperty("user.dir"));
+             * 
+             */
             
             String osname = System.getProperty("os.name");
             String osfolder = "linux";
@@ -24,9 +26,9 @@ public class Initlibraries {
             }
             
             String oldlibpath = System.getProperty("java.library.path");
-            System.setProperty("java.library.path", oldlibpath + ";./lib/lwjgl/native/"+osfolder);
+            System.setProperty("java.library.path", oldlibpath + ";./lib/lwjgl/native/"+osfolder+";");
             
-            System.out.println(System.getProperty("java.library.path"));
+            //System.out.println(System.getProperty("java.library.path"));
             
             Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
             fieldSysPath.setAccessible(true);
