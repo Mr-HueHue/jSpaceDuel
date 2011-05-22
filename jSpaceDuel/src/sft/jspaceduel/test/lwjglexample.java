@@ -14,6 +14,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import sft.jspaceduel.sysinit.Initlibraries;
 
 /**
  * @author jediTofu
@@ -40,7 +41,7 @@ public class lwjglexample {
 
   public static void main(String[] args) {
       
-      System.setProperty( "java.library.path", "/path/to/libs" );
+    Initlibraries.addlwjgl();
 
     lwjglexample main = null;
     try {

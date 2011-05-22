@@ -13,6 +13,7 @@ import org.lwjgl.opencl.CL;
 import org.lwjgl.opencl.CLContext;
 import org.lwjgl.opencl.CLDevice;
 import org.lwjgl.opencl.CLPlatform;
+import sft.jspaceduel.sysinit.Initlibraries;
 import static org.lwjgl.opencl.CL10.*;
 
 public class opencltest {
@@ -32,6 +33,9 @@ public class opencltest {
     static final FloatBuffer answer = BufferUtils.createFloatBuffer(a.capacity());
 
     public static void main(String[] args) throws Exception {
+        
+        Initlibraries.addlwjgl();
+        
         // initialization
         CL.create();
         CLPlatform platform = CLPlatform.getPlatforms().get(0);
