@@ -27,8 +27,8 @@ public class opencltest {
             + "}"
             ;
 
-    static final FloatBuffer a = toFloatBuffer(new float[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
-    static final FloatBuffer b = toFloatBuffer(new float[]{9, 8, 7, 6, 5, 4, 3, 2, 1, 0});
+    static final FloatBuffer a = toFloatBuffer(new float[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 88, 102, 400, 800, 50, 11});
+    static final FloatBuffer b = toFloatBuffer(new float[]{9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 12, 400, 600, 1550, 50, 89});
     static final FloatBuffer answer = BufferUtils.createFloatBuffer(a.capacity());
 
     public static void main(String[] args) throws Exception {

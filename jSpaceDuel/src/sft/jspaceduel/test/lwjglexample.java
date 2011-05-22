@@ -39,6 +39,9 @@ public class lwjglexample {
   }
 
   public static void main(String[] args) {
+      
+      System.setProperty( "java.library.path", "/path/to/libs" );
+
     lwjglexample main = null;
     try {
       System.out.println("Keys:");
