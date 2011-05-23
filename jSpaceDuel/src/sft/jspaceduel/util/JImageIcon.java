@@ -9,16 +9,16 @@ import sft.jspaceduel.exception.JImageNotFound;
  * @author JJ
  */
 public class JImageIcon {
-    public JImageIcon i;
+    public ImageIcon i;
     public JImageIcon(String filepath) throws JImageNotFound {
         URL imageurl = getClass().getResource(filepath);
         if(imageurl != null) {
-            i = new JImageIcon(imageurl);
+            i = new ImageIcon(imageurl);
         } else {
             throw new JImageNotFound(filepath);
         }
     }
-    public JImageIcon get() {
+    public ImageIcon get() {
         return i;
     }
 }
