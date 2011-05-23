@@ -11,13 +11,13 @@ import org.lwjgl.input.*;
  * 
  * @author JJ
  */
-public class inputtest {
+public class Inputtest {
 	public static void main(String[] args) throws LWJGLException {
 		Initlibraries.addlwjgl();
-		inputtest test = new inputtest();
+		Inputtest test = new Inputtest();
 	}
 
-	public inputtest() throws LWJGLException {
+	public Inputtest() throws LWJGLException {
 		// init OpenGL here
 		this.start();
 	}
