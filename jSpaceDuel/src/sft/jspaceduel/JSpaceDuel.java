@@ -8,7 +8,7 @@ package sft.jspaceduel;
  * 
  * @author Jonas Jelten
  */
-public class jspaceduel {
+public class JSpaceDuel {
 
     public static void main(String[] args) {
         throw new UnsupportedOperationException("haha not ready yet...");

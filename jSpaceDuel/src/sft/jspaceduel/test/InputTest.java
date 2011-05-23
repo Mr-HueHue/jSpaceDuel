@@ -1,7 +1,7 @@
 package sft.jspaceduel.test;
 
 import org.lwjgl.LWJGLException;
-import sft.jspaceduel.sysinit.Initlibraries;
+import sft.jspaceduel.sysinit.InitLibraries;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
@@ -11,13 +11,13 @@ import org.lwjgl.input.*;
  * 
  * @author JJ
  */
-public class inputtest {
+public class InputTest {
 	public static void main(String[] args) throws LWJGLException {
-		Initlibraries.addlwjgl();
-		inputtest test = new inputtest();
+		InitLibraries.addlwjgl();
+		InputTest test = new InputTest();
 	}
 
-	public inputtest() throws LWJGLException {
+	public InputTest() throws LWJGLException {
 		// init OpenGL here
 		this.start();
 	}

@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
  *
  * @author JJ
  */
-public class Initlibraries {
+public class InitLibraries {
 
     public static void addlwjgl() {
         try {

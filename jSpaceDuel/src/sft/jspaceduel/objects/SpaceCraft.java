@@ -1,4 +1,4 @@
-package sft.jspaceduel.objects.spacecraft;
+package sft.jspaceduel.objects;
 
 import sft.jspaceduel.objects.SpaceObject;
 

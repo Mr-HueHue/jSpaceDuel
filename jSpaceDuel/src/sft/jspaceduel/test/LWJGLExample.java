@@ -1,7 +1,5 @@
 package sft.jspaceduel.test;
 
-
-
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.*;
 
@@ -14,16 +12,16 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import sft.jspaceduel.sysinit.Initlibraries;
+import sft.jspaceduel.sysinit.InitLibraries;
 
 /**
  * @author jediTofu
  * @see <a href="http://lwjgl.org/">LWJGL Home Page</a>
  */
-public class lwjglexample {
+public class LWJGLExample {
   public static final int DISPLAY_HEIGHT = 480;
   public static final int DISPLAY_WIDTH = 640;
-  public static final Logger LOGGER = Logger.getLogger(lwjglexample.class.getName());
+  public static final Logger LOGGER = Logger.getLogger(LWJGLExample.class.getName());
 
   private int squareSize;
   private int squareX;
@@ -41,9 +39,9 @@ public class lwjglexample {
 
   public static void main(String[] args) {
       
-    Initlibraries.addlwjgl();
+    InitLibraries.addlwjgl();
 
-    lwjglexample main = null;
+    LWJGLExample main = null;
     try {
       System.out.println("Keys:");
       System.out.println("down  - Shrink");
@@ -51,7 +49,7 @@ public class lwjglexample {
       System.out.println("left  - Rotate left");
       System.out.println("right - Rotate right");
       System.out.println("esc   - Exit");
-      main = new lwjglexample();
+      main = new LWJGLExample();
       main.create();
       main.run();
     }
@@ -65,7 +63,7 @@ public class lwjglexample {
     }
   }
 
-  public lwjglexample() {
+  public LWJGLExample() {
     squareSize = 100;
     squareX = 0;
     squareY = 0;
