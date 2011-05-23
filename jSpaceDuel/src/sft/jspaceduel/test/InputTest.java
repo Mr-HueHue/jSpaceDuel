@@ -1,7 +1,7 @@
 package sft.jspaceduel.test;
 
 import org.lwjgl.LWJGLException;
-import sft.jspaceduel.sysinit.InitLibraries;
+import sft.jspaceduel.util.InitLibraries;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 

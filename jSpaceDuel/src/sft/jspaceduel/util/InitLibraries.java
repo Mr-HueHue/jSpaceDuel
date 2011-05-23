@@ -1,4 +1,4 @@
-package sft.jspaceduel.sysinit;
+package sft.jspaceduel.util;
 
 import java.lang.reflect.Field;
 
