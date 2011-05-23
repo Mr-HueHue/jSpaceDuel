@@ -19,14 +19,16 @@ public class Initlibraries {
             
             String osname = System.getProperty("os.name");
             String osfolder = "linux";
+            String seperator = ":";
             if(osname.toLowerCase().contains("windows")) {
                 osfolder = "windows";
+                seperator = ";";
             } else if (osname.toLowerCase().contains("mac") || osname.toLowerCase().contains("osx")) {
                 osfolder = "mac";
             }
             
             String oldlibpath = System.getProperty("java.library.path");
-            System.setProperty("java.library.path", oldlibpath + ";./lib/lwjgl/native/"+osfolder+";");
+            System.setProperty("java.library.path", oldlibpath + seperator+"./lib/lwjgl/native/"+osfolder+seperator);
             
             //System.out.println(System.getProperty("java.library.path"));
             
