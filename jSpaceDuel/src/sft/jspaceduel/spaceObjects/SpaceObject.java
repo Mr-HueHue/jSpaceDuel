@@ -91,9 +91,11 @@ public class SpaceObject {
 
         if(partnerleichter) {
             this.setMass(m1+m2);
+            this.setspeed(new double[]{pXnew, pYnew});
             partner.destroy();
         } else {
             partner.setMass(m1+m2);
+            partner.setspeed(new double[]{pXnew, pYnew});
             this.destroy();
         }
 
