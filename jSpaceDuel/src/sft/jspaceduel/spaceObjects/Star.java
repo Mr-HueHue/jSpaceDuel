@@ -13,12 +13,8 @@ public class Star extends SpaceObject {
     }
     
     public void setMass(double mass) {
-        this.mass = mass;
+        super.setMass(mass);
         calcLuminosity();
-    }
-    
-    public double getMass() {
-        return mass;
     }
     
     public double getLuminosity(){
