@@ -1,46 +1,57 @@
 package sft.jspaceduel.spaceObjects;
 
-import sft.jspaceduel.util.JImageIcon;
-
 /**
  *
- * @author JJ
+ * @author JJ, mic_e
  */
-public class SpaceObject {
-    protected double posX;
-    protected double posY;
-    protected double vX;
-    protected double vY;
-    protected double mass;
-    protected double angle;
-    protected double angularVelocity;
-    /*protected String pictureFileName;
-    protected JImageIcon picture;*/
+public abstract class SpaceObject {
+    private long lastMoved;
+    private long lastAccelerated;
+    public final long creationTime;
     
-    public SpaceObject(double[] pos, double[] v, double mass, double angle, double angularVelocity) {
-        this.posX = pos[0];
-        this.posY = pos[1];
-        this.vX = v[0];
-        this.vY = v[1];
-        this.mass = mass;
-        this.angularVelocity = angularVelocity;
-        this.angle = angle;
+    protected PosParams posParams;
+    
+    /**
+     * This is the space object's constructor.
+     * @param reg A referrer to the space object registry.
+     * @param posParams 
+     */
+    public SpaceObject(SpaceObjectManager reg, PosParams posParams) {
+        this.posParams = posParams;
+        creationTime = System.nanoTime();
+        lastMoved = creationTime;
+        lastAccelerated = creationTime;
+        reg.registerObject(this);
     }
     
-    public void accelerate(double[] dv) {
-        vX += dv[0];
-        vY += dv[1];
+    /**
+     * @return The object's current positional parameters.
+     */
+    public PosParams getPosParams() {
+        return posParams;
     }
     
-    public void move(double[] dpos) {
-        posX += dpos[0];
-        posY += dpos[1];
+    /**
+     * This method moves the object based on it's current velocity vector.
+     */
+    public void move() {
+        long moveTime = System.nanoTime();
+        posParams.move(moveTime - lastMoved);
+        lastMoved = moveTime;
     }
     
-    public double[] getGravitationalPull(double[] pos){
-        double deltaX=pos[0]-posX;
-        double deltaY=pos[1]-posY;
-        double pullBoth = mass/((deltaX*deltaX)+(deltaY*deltaY));
-        return new double[]{pullBoth, pullBoth}; //todo: x und y komponente des pulls berechnen.
-    }   
-}
+    /**
+     * This method accelerates this object.
+     * @param a The acceleration, measured in m/ns²
+     */
+    public void accelerate(double[] a) {
+        long accelerationTime = System.nanoTime();
+        posParams.accelerate(accelerationTime - lastAccelerated, a);
+        lastAccelerated = accelerationTime;
+    }
+    
+    /**
+     * This method returns the collision radius of this object.
+     */
+    public abstract double getCollisionRadius();
+ }
