@@ -1,4 +1,4 @@
-package sft.jspaceduel.network;
+package sft.sftengine.network;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -37,6 +37,7 @@ public class ServerListener extends Thread {
         while(listening) {
             try {
                 Socket i = s.accept();
+                i.setKeepAlive(true);
                 m.incomingConnection(i);
             } catch (IOException ex) {
                 System.out.println(ex);

@@ -1,4 +1,4 @@
-package sft.jspaceduel.network;
+package sft.sftengine.network;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author JJ
  */
-public final class ServerManager {
+public final class ServerManager implements DataHandler {
 
     ArrayList<SocketReciever> rlist;
     ArrayList<Socket> slist;
@@ -29,8 +29,9 @@ public final class ServerManager {
         plist = new ArrayList<PrintStream>();
         try {
             ServerSocket s = new ServerSocket(1337);
-            ServerListener l = new ServerListener(s, this);
+            l = new ServerListener(s, this);
             l.startListening();
+            System.out.println("Started successfully -.-");
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             boolean r = true;
             while (r) {
@@ -59,7 +60,7 @@ public final class ServerManager {
     int connums = 1;
 
     void incomingConnection(Socket i) {
-        SocketReciever r = new SocketReciever(i, new ServerDataHandler());
+        SocketReciever r = new SocketReciever(i, this);
         rlist.add(r);
         r.start();
 
@@ -77,10 +78,16 @@ public final class ServerManager {
             ex.printStackTrace(System.err);
         }
     }
+    
 
     public void sendToAll(String what) {
         for (PrintStream p : plist) {
             p.println(what);
         }
+    }
+
+    @Override
+    public void recievedData(Object ob) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
