@@ -28,14 +28,16 @@ public class SocketReciever extends Thread {
             ObjectInputStream oi = new ObjectInputStream(ie);
             while (!s.isClosed()) {
                 try {
-                    Sendable ob = (Sendable)oi.readObject();
+                    Sendable ob = (Sendable) oi.readObject();
                     if (ob != null) {
                         h.recievedData(ob);
                     } else {
                         break;
                     }
                 } catch (ClassNotFoundException ex) {
-                     // hmm...
+                    // hmm...
+                    System.out.println(ex);
+                    ex.printStackTrace(System.err);
                 }
             }
         } catch (IOException ex) {

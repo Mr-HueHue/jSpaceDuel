@@ -14,7 +14,7 @@ public class DataQueue {
     }
     
     
-    public void enqueue(Sendable s) {
+    public void add(Sendable s) {
         q.add(s);
     }
     
