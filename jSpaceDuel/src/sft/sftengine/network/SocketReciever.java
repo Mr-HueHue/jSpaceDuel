@@ -1,11 +1,13 @@
 package sft.sftengine.network;
 
-import java.io.BufferedReader;
+import sft.sftengine.network.interfaces.DataHandler;
+import sft.sftengine.network.interfaces.Sendable;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.zip.GZIPInputStream;
+import sft.sftengine.network.interfaces.ConnectionManager;
 
 /**
  *
@@ -13,10 +15,10 @@ import java.util.zip.GZIPInputStream;
  */
 public class SocketReciever extends Thread {
 
-    Socket s;
+    Connection s;
     DataHandler h;
 
-    public SocketReciever(Socket s, DataHandler h) {
+    public SocketReciever(Connection s, DataHandler h) {
         this.s = s;
         this.h = h;
     }
@@ -24,11 +26,10 @@ public class SocketReciever extends Thread {
     @Override
     public void run() {
         try {
-            GZIPInputStream ie = new GZIPInputStream(s.getInputStream());
-            ObjectInputStream oi = new ObjectInputStream(ie);
-            while (!s.isClosed()) {
+            ObjectInputStream is = s.getInputStream();
+            while (!s.getSocket().isClosed()) {
                 try {
-                    Sendable ob = (Sendable) oi.readObject();
+                    Sendable ob = (Sendable) is.readObject();
                     if (ob != null) {
                         h.recievedData(ob);
                     } else {

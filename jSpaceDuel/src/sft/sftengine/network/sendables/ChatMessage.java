@@ -1,7 +1,7 @@
 
 package sft.sftengine.network.sendables;
 
-import sft.sftengine.network.Sendable;
+import sft.sftengine.network.interfaces.Sendable;
 
 /**
  *

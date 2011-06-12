@@ -1,4 +1,4 @@
-package sft.sftengine.network;
+package sft.sftengine.network.interfaces;
 
 /**
  * Interface that must be implemented by Classes that will handle incuming data

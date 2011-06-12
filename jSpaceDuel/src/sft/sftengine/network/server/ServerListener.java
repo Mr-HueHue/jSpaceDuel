@@ -1,4 +1,4 @@
-package sft.sftengine.network;
+package sft.sftengine.network.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;

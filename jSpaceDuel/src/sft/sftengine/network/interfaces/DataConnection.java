@@ -1,4 +1,4 @@
-package sft.sftengine.network;
+package sft.sftengine.network.interfaces;
 
 /**
  *

@@ -1,10 +1,12 @@
 package sft.sftengine.physics;
 
+import sft.sftengine.network.interfaces.Sendable;
+
 /**
  *
  * @author JJ
  */
-public class TestPhysObject extends PhysicsObject {
+public class TestPhysObject extends PhysicsObject implements Sendable {
     int[] pos;
     String name;
     boolean alive;
