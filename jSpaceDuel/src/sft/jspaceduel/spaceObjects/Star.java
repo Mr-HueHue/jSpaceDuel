@@ -4,17 +4,22 @@ package sft.jspaceduel.spaceObjects;
  *
  * @author JJ
  */
-public class Star extends SpaceObject {
+public class Star extends CelestialBody implements LightSource {
     public double luminosity;
     
-    public Star(double[] pos, double[] v, double mass, double angle, double angularVelocity) {
-        super(pos, v, mass, angle, angularVelocity);
+    public Star(SpaceObjectManager reg, double[] pos, double[] v, double mass, double angle, double angularVelocity) {
+        super(reg, pos, v, mass, angle, angularVelocity, getRadius());
         calcLuminosity();
+        reg.registerLightSource(this);
     }
     
     public void setMass(double mass) {
-        super.setMass(mass);
+        this.mass = mass;
         calcLuminosity();
+    }
+    
+    public double getMass() {
+        return mass;
     }
     
     public double getLuminosity(){
@@ -32,6 +37,6 @@ public class Star extends SpaceObject {
     }  
     
     public double getRadius() {
-        return 0;
+        return 1.61978825e-15*Math.pow(mass,0.78);
     }
 }
