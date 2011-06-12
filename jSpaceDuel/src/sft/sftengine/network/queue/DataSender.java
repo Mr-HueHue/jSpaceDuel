@@ -46,6 +46,7 @@ public class DataSender extends Thread {
 
     @Override
     public void run() {
+        System.out.println("Senderthread started.");
         //boolean sentsomething = false;
         while (sending) {
             
@@ -70,15 +71,18 @@ public class DataSender extends Thread {
                 c.sendData(se);
                 //sentsomething = true;
             } else {
-                System.out.println("Nothing to send.");
+                //System.out.println("Nothing to send.");
                 //sentsomething = false;
             }
             
             try {
                 synchronized (this) {
-                    System.out.println("Waiting 10 seconds..");
-                    this.wait(10000); //TODO: dynamic waiting so that we actually send every whatever seconds
-                    System.out.println("kk done waiting");
+                    
+                    //System.out.println("Waiting 10 seconds..");
+                        this.wait(10000); //TODO: dynamic waiting so that we actually send every whatever seconds
+                    //System.out.println("kk done waiting");
+                    
+                        
                 }
             } catch (InterruptedException ex) {
                 System.out.println(ex);
@@ -95,6 +99,7 @@ public class DataSender extends Thread {
                 this.notify();
             } else {
                 // maybe nothing, wait for next tick.
+                
             }
         }
     }
