@@ -4,10 +4,6 @@ import sft.sftengine.network.interfaces.DataHandler;
 import sft.sftengine.network.interfaces.Sendable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.net.Socket;
-import java.net.SocketException;
-import java.util.zip.GZIPInputStream;
-import sft.sftengine.network.interfaces.ConnectionManager;
 
 /**
  *
@@ -26,10 +22,9 @@ public class SocketReciever extends Thread {
     @Override
     public void run() {
         try {
-            ObjectInputStream is = s.getInputStream();
             while (!s.getSocket().isClosed()) {
                 try {
-                    Sendable ob = (Sendable) is.readObject();
+                    Sendable ob = (Sendable) s.getInputStream().readObject();
                     if (ob != null) {
                         h.recievedData(ob);
                     } else {
@@ -41,6 +36,7 @@ public class SocketReciever extends Thread {
                     ex.printStackTrace(System.err);
                 }
             }
+            System.out.println("socket reciever connection killed.");
         } catch (IOException ex) {
             System.out.println(ex);
             ex.printStackTrace(System.err);

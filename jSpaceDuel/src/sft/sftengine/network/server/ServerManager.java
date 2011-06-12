@@ -3,11 +3,9 @@ package sft.sftengine.network.server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.zip.GZIPOutputStream;
 import sft.sftengine.network.Connection;
 import sft.sftengine.network.interfaces.DataConnection;
 import sft.sftengine.network.interfaces.DataHandler;
@@ -93,25 +91,21 @@ public final class ServerManager implements DataHandler, DataConnection, Connect
     int connums = 1;
 
     void incomingConnection(Socket i) throws IOException {
-
-        SocketReciever r = new SocketReciever(new Connection(i, this), this);
+        
+        System.out.println("client connected: number " + connums++);
+        
+        Connection c = new Connection(i, this);
+        
+        SocketReciever r = new SocketReciever(c, this);
         rlist.add(r);
         r.start();
 
-        clist.add(new Connection(i, this));
-
-        System.out.println("client connected: number " + connums++);
+        clist.add(c);
 
     }
-
-
-    /*public void sendToAll(String what) {
-    for (PrintStream p : plist) {
-    p.println(what);
-    }
-    }*/
+    
     @Override
-    public void recievedData(Object ob) {
+    public void recievedData(Sendable ob) {
         System.out.println(ob.toString());
     }
 
@@ -120,6 +114,7 @@ public final class ServerManager implements DataHandler, DataConnection, Connect
         System.out.println("server-datasend invoked");
         for (Connection o : clist) {
             try {
+                System.out.println("sending data to "+ o.toString());
                 o.send(data);
             } catch (IOException ex) {
                 //whatever

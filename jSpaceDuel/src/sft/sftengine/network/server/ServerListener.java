@@ -13,6 +13,7 @@ public class ServerListener extends Thread {
     ServerManager m;
     boolean listening = true;
     public ServerListener(ServerSocket s, ServerManager m) {
+        this.setName("Server-Socket-Listener");
         this.s = s;
         this.m = m;
     }
