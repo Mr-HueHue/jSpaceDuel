@@ -81,6 +81,7 @@ public final class ServerManager implements DataHandler, DataConnection, Connect
                 }
             }
             l.stopListening();
+            sen.stopSending();
         } catch (IOException ex) {
             System.out.println(ex);
             ex.printStackTrace(System.err);
