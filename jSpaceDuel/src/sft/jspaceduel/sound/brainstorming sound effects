@@ -1,0 +1,27 @@
+-Waffen:
+    -MG
+    -Laz0r
+    -Shogun
+    -Rocketlauncher (zielsuchend oder direkt oder so)
+    -Ammo lehr
+
+-Kollisionen:
+    -Ship-Ship
+    -Planet-Ship
+    -Planet-Sonne
+    -Sonne-Sonne
+    -Schwarzes Loch
+    -Spasti
+    
+
+
+-Menü-Klicks
+
+-Chat-Message
+
+-Schüff
+    -gabudd
+    -gas
+    -bremsen
+    -getroffen (je nach waffe)
+    
