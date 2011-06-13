@@ -37,7 +37,8 @@ public class Client implements DataHandler, DataConnection, ConnectionManager {
         sen.startSending();
         System.out.println("Client inited...");
         handleinputs();
-        
+        sen.stopSending();
+        System.exit(0);
     }
     
     private void handleinputs() {
@@ -46,11 +47,14 @@ public class Client implements DataHandler, DataConnection, ConnectionManager {
             while (a) {
             try {
                 String l = b.readLine();
-                if (l != null) {
+                if(l == "quit") {
+                    break;
+                }
+                else if (l != null) {
                     String[] interp = l.split(",");
                     String name = interp[0];
                     int posx, posy;
-                    if (interp.length == 2) {
+                    if (interp.length == 3) {
                         try {
                             posx = Integer.parseInt(interp[1]);
                             posy = Integer.parseInt(interp[2]);
