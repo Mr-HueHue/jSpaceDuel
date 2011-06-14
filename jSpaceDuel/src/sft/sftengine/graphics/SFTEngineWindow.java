@@ -25,6 +25,10 @@ public class SFTEngineWindow {
     int fps;
     /** last fps time */
     long lastFPS;
+    long aktuelleFPS;
+    private boolean renderenabled;
+    private boolean vsync;
+    private int vsynchrate;
 
     public SFTEngineWindow(Renderer r, String title) throws LWJGLException {
         this(r, 0, 0, true, title);
@@ -41,17 +45,30 @@ public class SFTEngineWindow {
         this.heigthFull = Display.getDesktopDisplayMode().getHeight();
         this.widthFull = Display.getDesktopDisplayMode().getWidth();
         this.fullscreen = fullscreen;
+        renderenabled = true;
+        vsync = false;
+        vsynchrate = Display.getDisplayMode().getFrequency();
         r = renderer;
 
         modes = Display.getAvailableDisplayModes();
 
-        System.out.println("List of available display modes:");
+        System.out.println("List of available (fullscreen) display modes:");
         for (int i = 0; i < modes.length; i++) {
             DisplayMode current = modes[i];
             System.out.println(current.getWidth() + "x" + current.getHeight() + "x"
                     + current.getBitsPerPixel() + " " + current.getFrequency() + "Hz");
         }
+        System.out.println("Current desktop mode:");
+        System.out.println(Display.getDesktopDisplayMode().getWidth() + "x" + Display.getDesktopDisplayMode().getHeight() + "x" + Display.getDesktopDisplayMode().getBitsPerPixel() + " " + Display.getDesktopDisplayMode().getFrequency() + "Hz");
         setDisplayMode(width, heigth, fullscreen);
+    }
+
+    /**
+     * Sets a new text to the title line of the window.
+     * @param title the text to be set
+     */
+    public void setTitle(String title) {
+        Display.setTitle(title);
     }
 
     /**
@@ -67,17 +84,37 @@ public class SFTEngineWindow {
             System.exit(0);
         }
     }
-    
+
+    /**
+     * Enables vsynching of the rendered content.
+     */
     public void enableVSync() {
+        vsync = true;
         setVSync(true);
     }
-    
+
+    /**
+     * Disables vsynching of the rendered content.
+     */
     public void disableVSync() {
+        vsync = false;
         setVSync(false);
     }
-    
+
+    /**
+     * Sets the window vsynching process.
+     * @param enable enable vsynching
+     */
     public void setVSync(boolean enable) {
-        Display.setVSyncEnabled(enable);
+        if (vsync != enable) {
+            vsync = enable;
+            if(enable) {
+                System.out.println("Enabling vsynching...");
+            } else {
+                System.out.println("Disabling vsynching...");
+            }
+            Display.setVSyncEnabled(enable);
+        }
     }
 
     /**
@@ -145,7 +182,6 @@ public class SFTEngineWindow {
     public long getNanoTime() {
         return System.nanoTime();
     }
-    long aktuelleFPS;
 
     /**
      * Calculate the FPS and set it in the title bar
@@ -158,12 +194,15 @@ public class SFTEngineWindow {
         }
         fps++;
     }
-    
+
+    /**
+     * Sets fullscreen mode
+     * @param enable enable fullscreen
+     */
     public void setFullscreen(boolean enable) {
-        if(enable) {
+        if (enable) {
             setDisplayMode(0, 0, true);
-        }
-        else {
+        } else {
             setDisplayMode(width, heigth, false);
         }
     }
@@ -212,11 +251,12 @@ public class SFTEngineWindow {
                         }
                     }
                 }
-                
-                // dirty stuff nah :D
-                System.out.println("Couldn't find current mode, but i'll just try to set it.");
-                targetDisplayMode = Display.getDesktopDisplayMode();
-                
+                if (targetDisplayMode == null) {
+                    // dirty stuff nah :D
+                    System.out.println("Couldn't find current mode, but i'll just try to set it.");
+                    targetDisplayMode = Display.getDesktopDisplayMode();
+                }
+
             } else {
                 targetDisplayMode = new DisplayMode(width, height);
             }
@@ -225,26 +265,36 @@ public class SFTEngineWindow {
                 System.out.println("Failed to find value mode: " + width + "x" + height + " fs=" + fullscreen);
                 return;
             }
-            
+
             this.fullscreen = fullscreen;
 
-            if(fullscreen) {
+            if (fullscreen) {
                 this.widthFull = targetDisplayMode.getWidth();
                 this.heigthFull = targetDisplayMode.getHeight();
             } else {
-                this.width = targetDisplayMode.getWidth();
-                this.heigth = targetDisplayMode.getHeight();
+                this.width = width;
+                this.heigth = height;
             }
-            
 
-            Display.setDisplayMode(targetDisplayMode);
-            Display.setFullscreen(fullscreen);
+            //Display.setFullscreen(fullscreen);
+
+            if (fullscreen) {
+                System.out.println("Setting fullscreen display mode now...");
+                Display.setDisplayModeAndFullscreen(targetDisplayMode);
+            } else {
+                System.out.println("Setting windowed display mode now...");
+                Display.setDisplayMode(targetDisplayMode);
+            }
+
 
         } catch (LWJGLException e) {
             System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
         }
     }
 
+    /**
+     * Main method which starts rendering.
+     */
     public void start() {
 
         getDelta(); // call once before loop to initialise lastFrame
@@ -252,29 +302,99 @@ public class SFTEngineWindow {
 
         r.init();
 
-        while (!Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+        while (renderenabled && !Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
             // Rendering loop
 
 
-            int delta = getDelta();
 
-            r.update(delta);
+            r.update(getDelta());
             r.render();
 
             updateFPS();
 
             Display.update();
-            Display.sync(60); // cap fps to 60fps
+
+            if (vsync) {
+                Display.sync(vsynchrate); // cap fps to 60fps
+            }
+
+            try {
+                if (!Display.isActive()) {
+                    synchronized (this) {
+                        if (!Display.isVisible()) {
+                            wait(1000);
+                        } else {
+                            wait(100);
+                        }
+                    }
+                }
+            } catch (InterruptedException ex) {
+                ex.printStackTrace(System.err);
+            }
 
         }
 
-        destroy();
-
+        destroyEntities();
+        cleanup();
+        System.out.println("SFT-Engine shut down.");
+        System.exit(0);
     }
 
-    public void destroy() {
+    private void destroyEntities() {
         Display.destroy();
         Mouse.destroy();
         Keyboard.destroy();
+        renderenabled = false;
+        System.out.println("Destroyed all LWJGL Entities.");
+    }
+
+    /**
+     * Kills the renderer after letting him finish the last frame.
+     */
+    public void destroy() {
+        renderenabled = false;
+    }
+
+    /**
+     * Kills the renderer instantly.
+     */
+    public void destroyHard() {
+        destroyEntities();
+    }
+
+    private void cleanup() {
+        // cleanup stuff
+    }
+
+    /**
+     * grabs the mouse to the window
+     */
+    public void grabMouse() {
+        setMouseGrabbed(true);
+    }
+
+    /**
+     * releases a grabbed mouse.
+     */
+    public void releaseMouse() {
+        setMouseGrabbed(false);
+    }
+
+    /**
+     * Sets the mouse to be grabbed (hidden and caught in the window)
+     * @param grab 
+     */
+    public void setMouseGrabbed(boolean grab) {
+        if (grab != Mouse.isGrabbed()) {
+            Mouse.setGrabbed(grab);
+        }
+    }
+
+    /**
+     * Test the mouse grabbing status
+     * @return is the mouse grabbed
+     */
+    public boolean isMouseGrabbed() {
+        return Mouse.isGrabbed();
     }
 }
