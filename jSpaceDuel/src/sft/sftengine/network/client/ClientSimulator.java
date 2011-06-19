@@ -16,9 +16,10 @@ public class ClientSimulator {
 
     public ClientSimulator() {
         try {
-            Socket v1 = new Socket("127.0.0.1", 1337);
-            v1.setKeepAlive(true);
-            new Client(v1);
+            Socket ieeee = new Socket("127.0.0.1", 1337);
+            System.out.println("Connected to " + ieeee.getInetAddress().getHostAddress() + ":"+ ieeee.getPort());
+            ieeee.setKeepAlive(true);
+            Client nein  = new Client(ieeee);
         } catch (UnknownHostException ex) {
             System.out.println(ex);
             ex.printStackTrace(System.err);

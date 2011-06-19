@@ -4,10 +4,6 @@ import sft.sftengine.network.interfaces.DataHandler;
 import sft.sftengine.network.interfaces.Sendable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.net.Socket;
-import java.net.SocketException;
-import java.util.zip.GZIPInputStream;
-import sft.sftengine.network.interfaces.ConnectionManager;
 
 /**
  *
@@ -39,7 +35,9 @@ public class SocketReciever extends Thread {
                     // hmm...
                     System.out.println(ex);
                     ex.printStackTrace(System.err);
-                }
+                } //catch (NullPointerException ex) {
+                    //ex.printStackTrace(System.err);
+                //}
             }
         } catch (IOException ex) {
             System.out.println(ex);
