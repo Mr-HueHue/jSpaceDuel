@@ -22,10 +22,9 @@ public class SocketReciever extends Thread {
     @Override
     public void run() {
         try {
-            ObjectInputStream is = s.getInputStream();
             while (!s.getSocket().isClosed()) {
                 try {
-                    Sendable ob = (Sendable) is.readObject();
+                    Sendable ob = (Sendable) s.getInputStream().readObject();
                     if (ob != null) {
                         h.recievedData(ob);
                     } else {
@@ -39,6 +38,7 @@ public class SocketReciever extends Thread {
                     //ex.printStackTrace(System.err);
                 //}
             }
+            System.out.println("socket reciever connection killed.");
         } catch (IOException ex) {
             System.out.println(ex);
             ex.printStackTrace(System.err);

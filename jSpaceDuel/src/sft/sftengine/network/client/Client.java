@@ -1,12 +1,9 @@
 package sft.sftengine.network.client;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.zip.GZIPOutputStream;
 import sft.sftengine.network.Connection;
 import sft.sftengine.network.interfaces.DataHandler;
 import sft.sftengine.network.interfaces.Sendable;
@@ -27,24 +24,21 @@ public class Client implements DataHandler, DataConnection, ConnectionManager {
     SendableStorage stor;
     
     Socket s;
-    DataOutputStream o;
-    GZIPOutputStream zip;
-    ObjectOutputStream obj;
+    Connection c;
 
     public Client(Socket k) throws IOException {
         s = k;
-        SocketReciever r = new SocketReciever(new Connection(s, this), this);
+        c = new Connection(s, this);
+        SocketReciever r = new SocketReciever(c, this);
         r.start();
-        zip = new GZIPOutputStream(s.getOutputStream());
-        o = new DataOutputStream(zip);
-        obj = new ObjectOutputStream(zip);
         
         stor = new SendableStorage();
         sen = new DataSender(stor, this);
-        //sen.startSending();
+        sen.startSending();
         System.out.println("Client inited...");
         handleinputs();
-        
+        sen.stopSending();
+        System.exit(0);
     }
     
     private void handleinputs() {
@@ -53,11 +47,14 @@ public class Client implements DataHandler, DataConnection, ConnectionManager {
             while (a) {
             try {
                 String l = b.readLine();
-                if (l != null) {
+                if(l == "quit") {
+                    break;
+                }
+                else if (l != null) {
                     String[] interp = l.split(",");
                     String name = interp[0];
                     int posx, posy;
-                    if (interp.length == 2) {
+                    if (interp.length == 3) {
                         try {
                             posx = Integer.parseInt(interp[1]);
                             posy = Integer.parseInt(interp[2]);
@@ -86,14 +83,14 @@ public class Client implements DataHandler, DataConnection, ConnectionManager {
     @Override
     public void sendData(Sendable object) {
         try {
-            obj.writeObject(object);
+            c.getOutputStream().writeObject(object);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
     @Override
-    public void recievedData(Object ob) {
+    public void recievedData(Sendable ob) {
         System.out.println("Client data: " + ob.toString());
     }
 

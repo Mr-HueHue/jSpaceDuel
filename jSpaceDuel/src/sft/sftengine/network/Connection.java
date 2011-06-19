@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package sft.sftengine.network;
 
 import java.io.IOException;
@@ -9,8 +5,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sft.sftengine.network.interfaces.ConnectionManager;
 import sft.sftengine.network.interfaces.Sendable;
 
@@ -25,13 +21,22 @@ public class Connection {
     Socket s;
     ConnectionManager m;
 
-    public Connection(Socket s, ConnectionManager m) throws IOException {
-        this.s = s;
-        try {
-            os = new ObjectOutputStream(new GZIPOutputStream(s.getOutputStream()));
+    public Connection(Socket so, ConnectionManager m)  {
+        this.s = so;
+        createConnection();
+    }
 
-            is = new ObjectInputStream(new GZIPInputStream(s.getInputStream()));
-        } catch (SocketException ex) {
+    private void createConnection() {
+        try {
+            os = new ObjectOutputStream(s.getOutputStream());
+            is = new ObjectInputStream(s.getInputStream());
+        } catch (IOException ex) {
+            ex.printStackTrace(System.err);
+            try {
+                s.close();
+            } catch (IOException ex1) {
+                ex1.printStackTrace(System.err);
+            }
             m.connectionKilled(this);
         }
     }
@@ -51,4 +56,15 @@ public class Connection {
     public Socket getSocket() {
         return s;
     }
+    
+    public void writeSendable(Sendable s) throws IOException {
+        os.writeObject(s);
+    }
+            
+    
+    @Override
+    public String toString() {
+        return "ip of partner: "+s.getInetAddress().getHostAddress() + " port:" + s.getPort();
+    }
+            
 }

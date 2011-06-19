@@ -7,5 +7,5 @@ package sft.sftengine.network.interfaces;
  * @author JJ
  */
 public interface DataHandler {
-    public void recievedData(Object ob);
+    public void recievedData(Sendable ob);
 }
