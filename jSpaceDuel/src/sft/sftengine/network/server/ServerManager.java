@@ -34,7 +34,7 @@ public final class ServerManager implements DataHandler, DataConnection, Connect
 
     public ServerManager() {
         stor = new SendableStorage();
-        sen = new DataSender(stor, this);
+        sen = new DataSender(stor, this, 10000);
         sen.startSending();
 
         rlist = new ArrayList<SocketReciever>();

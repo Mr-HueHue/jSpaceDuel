@@ -33,7 +33,7 @@ public class Client implements DataHandler, DataConnection, ConnectionManager {
         r.start();
         
         stor = new SendableStorage();
-        sen = new DataSender(stor, this);
+        sen = new DataSender(stor, this, 10000);
         sen.startSending();
         System.out.println("Client inited...");
         handleinputs();

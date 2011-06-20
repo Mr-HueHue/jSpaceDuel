@@ -12,11 +12,12 @@ import sft.sftengine.util.InitLibraries;
  *
  * @author jj
  */
-public class SFTEngineWindow {
+public class SFTEngineWindow extends Thread {
 
     Renderer r;
-    int heigth, width;
-    int heigthFull, widthFull;
+    int heightWindowed, widthWindowed;
+    int heightFull, widthFull;
+    int height, width;
     DisplayMode[] modes;
     boolean fullscreen;
     /** time at last frame */
@@ -40,27 +41,30 @@ public class SFTEngineWindow {
 
     private SFTEngineWindow(Renderer renderer, int width, int heigth, boolean fullscreen, String title) throws LWJGLException {
         InitLibraries.addlwjgl();
-        this.heigth = heigth;
+        this.height = heigth;
         this.width = width;
-        this.heigthFull = Display.getDesktopDisplayMode().getHeight();
-        this.widthFull = Display.getDesktopDisplayMode().getWidth();
         this.fullscreen = fullscreen;
+        Display.setTitle(title);
         renderenabled = true;
         vsync = false;
         vsynchrate = Display.getDisplayMode().getFrequency();
         r = renderer;
-
-        modes = Display.getAvailableDisplayModes();
-
-        System.out.println("List of available (fullscreen) display modes:");
-        for (int i = 0; i < modes.length; i++) {
-            DisplayMode current = modes[i];
-            System.out.println(current.getWidth() + "x" + current.getHeight() + "x"
-                    + current.getBitsPerPixel() + " " + current.getFrequency() + "Hz");
-        }
+        
         System.out.println("Current desktop mode:");
         System.out.println(Display.getDesktopDisplayMode().getWidth() + "x" + Display.getDesktopDisplayMode().getHeight() + "x" + Display.getDesktopDisplayMode().getBitsPerPixel() + " " + Display.getDesktopDisplayMode().getFrequency() + "Hz");
         setDisplayMode(width, heigth, fullscreen);
+    }
+    
+    /**
+     * Lists all available display modes.
+     */
+    public DisplayMode[] listModes() {
+        try {
+            return Display.getAvailableDisplayModes();
+        } catch (LWJGLException ex) {
+            System.err.println("Failed getting display modes.");
+            return null;
+        }
     }
 
     /**
@@ -108,7 +112,7 @@ public class SFTEngineWindow {
     public void setVSync(boolean enable) {
         if (vsync != enable) {
             vsync = enable;
-            if(enable) {
+            if (enable) {
                 System.out.println("Enabling vsynching...");
             } else {
                 System.out.println("Disabling vsynching...");
@@ -203,8 +207,16 @@ public class SFTEngineWindow {
         if (enable) {
             setDisplayMode(0, 0, true);
         } else {
-            setDisplayMode(width, heigth, false);
+            setDisplayMode(widthWindowed, heightWindowed, false);
         }
+    }
+    
+    /**
+     * Information about the current mode
+     * @return the currently activated mode
+     */
+    public DisplayMode getCurrentMode() {
+        return Display.getDisplayMode();
     }
 
     /**
@@ -227,42 +239,13 @@ public class SFTEngineWindow {
             DisplayMode targetDisplayMode = null;
 
             if (fullscreen) {
-
-                int freq = 0;
-
-                for (int i = 0; i < modes.length; i++) {
-                    DisplayMode current = modes[i];
-
-                    if ((current.getWidth() == width) && (current.getHeight() == height)) {
-                        if ((targetDisplayMode == null) || (current.getFrequency() >= freq)) {
-                            if ((targetDisplayMode == null) || (current.getBitsPerPixel() > targetDisplayMode.getBitsPerPixel())) {
-                                targetDisplayMode = current;
-                                freq = targetDisplayMode.getFrequency();
-                            }
-                        }
-
-                        // if we've found a match for bpp and frequence against the 
-                        // original display mode then it's probably best to go for this one
-                        // since it's most likely compatible with the monitor
-                        if ((current.getBitsPerPixel() == Display.getDesktopDisplayMode().getBitsPerPixel())
-                                && (current.getFrequency() == Display.getDesktopDisplayMode().getFrequency())) {
-                            targetDisplayMode = current;
-                            break;
-                        }
-                    }
-                }
-                if (targetDisplayMode == null) {
-                    // dirty stuff nah :D
-                    System.out.println("Couldn't find current mode, but i'll just try to set it.");
-                    targetDisplayMode = Display.getDesktopDisplayMode();
-                }
-
+                targetDisplayMode = Display.getDesktopDisplayMode();
             } else {
                 targetDisplayMode = new DisplayMode(width, height);
             }
 
             if (targetDisplayMode == null) {
-                System.out.println("Failed to find value mode: " + width + "x" + height + " fs=" + fullscreen);
+                System.out.println("Failed to find value mode: " + width + "x" + height + " fullscreen=" + fullscreen);
                 return;
             }
 
@@ -270,11 +253,14 @@ public class SFTEngineWindow {
 
             if (fullscreen) {
                 this.widthFull = targetDisplayMode.getWidth();
-                this.heigthFull = targetDisplayMode.getHeight();
+                this.heightFull = targetDisplayMode.getHeight();
             } else {
-                this.width = width;
-                this.heigth = height;
+                this.widthWindowed = width;
+                this.heightWindowed = height;
             }
+            
+            this.width = targetDisplayMode.getWidth();
+            this.height = targetDisplayMode.getHeight();
 
             //Display.setFullscreen(fullscreen);
 
@@ -285,7 +271,7 @@ public class SFTEngineWindow {
                 System.out.println("Setting windowed display mode now...");
                 Display.setDisplayMode(targetDisplayMode);
             }
-
+            r.changeResolution(width, this.height);
 
         } catch (LWJGLException e) {
             System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
@@ -295,6 +281,7 @@ public class SFTEngineWindow {
     /**
      * Main method which starts rendering.
      */
+    @Override
     public void start() {
 
         getDelta(); // call once before loop to initialise lastFrame
@@ -322,9 +309,9 @@ public class SFTEngineWindow {
                 if (!Display.isActive()) {
                     synchronized (this) {
                         if (!Display.isVisible()) {
-                            wait(1000);
+                            wait(1000); // FPS iw window is hidden/minimized etc
                         } else {
-                            wait(100);
+                            wait(100); // FPS if window is covered
                         }
                     }
                 }
@@ -351,6 +338,7 @@ public class SFTEngineWindow {
     /**
      * Kills the renderer after letting him finish the last frame.
      */
+    @Override
     public void destroy() {
         renderenabled = false;
     }
@@ -396,5 +384,14 @@ public class SFTEngineWindow {
      */
     public boolean isMouseGrabbed() {
         return Mouse.isGrabbed();
+    }
+    
+    /**
+     * Sets the mouse at this window position
+     * @param screenX
+     * @param screenY 
+     */
+    public static void setCursorPosition(int screenX, int screenY) {
+       	Mouse.setCursorPosition(screenX,screenY);
     }
 }
