@@ -12,6 +12,11 @@ import sft.sftengine.graphics.SFT_Image;
  * @author JJ
  */
 public class SFT_ScreenShot {
+    
+    public SFT_ScreenShot(String filename) {
+        screenShot(filename);
+    }
+    
     /**
      * Save the current frame buffer to a PNG image. Same as
      * screenShot(filename) but the screenshot filename will be automatically

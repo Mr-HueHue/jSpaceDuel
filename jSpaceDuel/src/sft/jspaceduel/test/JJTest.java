@@ -1,15 +1,15 @@
 package sft.jspaceduel.test;
 
-import java.awt.Color;
 import java.awt.Font;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.glu.GLU;
 import static org.lwjgl.opengl.GL11.*;
+import static sft.sftengine.util.SFT_Util.*;
+import static sft.sftengine.util.SFT_DrawTemplates.*;
 import sft.sftengine.graphics.Renderer;
 import sft.sftengine.graphics.SFTEngineWindow;
 import sft.sftengine.graphics.SFT_Font;
-import sft.sftengine.util.SFT_DrawTemplates;
 import sft.sftengine.util.SFT_Util;
 
 /**
@@ -23,6 +23,7 @@ public class JJTest implements Renderer {
     SFTEngineWindow w;
     int wi, he;
     SFT_Font sftf;
+    int sphereDL = 0, cubeDL = 0;
 
     public static void main(String[] args) throws LWJGLException {
         new JJTest();
@@ -36,76 +37,112 @@ public class JJTest implements Renderer {
         w.start();
     }
     /** position of quad */
-    float x = 400, y = 300;
+    float x = -70, y = 0;
     /** angle of quad rotation */
     float rotation = 0;
+    int marbleTextureHandle, groundTextureHandle;
+    // Light position: if last value is 0, then this describes light direction.  If 1, then light position.
+    float lightPosition1[] = {0f, 0f, 0f, 1f};
+    float lightPosition2[] = {0f, -10f, 0f, 0f};
+    float lightPosition3[] = {0f, 0f, 0f, 1f};
+    float[] redmaterial = new float[]{0.8f, 0.3f, 0.2f, 1.0f};
 
     @Override
     public void render() {
         // Clear The Screen And The Depth Buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        //SFT_Util.setLight(GL_LIGHT1, SFT_Util.colorToFloat4(Color.white), SFT_Util.colorToFloat4(Color.lightGray), SFT_Util.colorToFloat4(Color.white), new float[]{ 100,100,0,0 });
+        // select model view for subsequent transforms
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
 
+        // set the viewpoint
+        GLU.gluLookAt(0f, 3f, 15f, // where is the eye
+                0f, -1f, 0f, // what point are we looking at
+                0f, 1f, 0f);    // which way is up
 
+        //---------------------------------------------------------------
+        // desktop
+        //---------------------------------------------------------------
+
+        // dark reddish material
+        setMaterial(redmaterial, .2f);
+
+        // enable texture
+        glBindTexture(GL_TEXTURE_2D, groundTextureHandle);
+
+        // draw the ground plane
         glPushMatrix();
-        glTranslatef(x - 10, y - 10, 0);
-        glRotatef(rotation, 0f, 0f, 1f);
-        glColor3d(0, 0.123, 0.9);
-        glBegin(GL_QUADS);
-        glVertex2f(- 50, - 50);
-        glVertex2f(50, - 50);
-        glVertex2f(50, 50);
-        glVertex2f(- 50, 50);
-        glEnd();
+        {
+            glTranslatef(0f, x*0.1f, y*0.1f); // down a bit
+            callDisplayList(cubeDL);
+        }
         glPopMatrix();
 
 
+        // orbit
+        glRotatef(rotation, 0, 1, 0);
+        glTranslatef(3, 0, 0);
+
+        glRotatef(rotation / 2, 0, 1, 0);
+        glTranslatef(-2, 0, 0);
+
+
+        //---------------------------------------------------------------
+        // glowing white ball
+        //---------------------------------------------------------------
+
+        // for point lights set position each frame so light moves with scene
+        // white light at same position as marble ball
+        setLightPosition(GL_LIGHT1, lightPosition1);
+
+        // glowing white material
+        setMaterial(
+                new float[]{1.0f, 1.0f, 1.0f, 1.0f}, // diffuse color
+                new float[]{1.0f, 1.0f, 1.0f, 1.0f}, // ambient
+                new float[]{0.0f, 0.0f, 0.0f, 1.0f}, // specular
+                new float[]{1.0f, 1.0f, 1.0f, 1.0f}, // emissive
+                0f);        // not shiny
+
+        // enable texture
+        glBindTexture(GL_TEXTURE_2D, marbleTextureHandle);
+
+        // draw marble sphere
         glPushMatrix();
-        glColor3f(0.9f, 0.9f, 0f);
-        glTranslatef(x, y, 0);
-        SFT_DrawTemplates.drawFilledCircleD(50, 50, 100);
+        {
+            glScalef(.9f, .9f, .9f);    // make it smaller
+            callDisplayList(sphereDL);       // draw the sphere display list
+        }
         glPopMatrix();
 
 
+        // orbit
+        glRotatef(rotation * 1.4f, 0, 1, 0);
+        glTranslatef(4, 0, 0);
 
+
+        //---------------------------------------------------------------
+        // shiny blue ball
+        //---------------------------------------------------------------
+
+        // shiny dark blue material
+        setMaterial(new float[]{0.3f, 0.3f, 0.6f, 1.0f}, .9f);
+
+        // set blue light at same spot as blue sphere
+        setLightPosition(GL_LIGHT3, lightPosition3);
+
+        // no texture (texture handle 0)
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        // Draw sphere
         glPushMatrix();
-        glTranslatef(x + 100, y + 100, 0);
-        glRotatef(rotation, 0f, 0f, -1f);
-        glColor3f(0.9f, 0.1f, 0.0f);
-        glBegin(GL_TRIANGLES);
-
-        glVertex2d(-50, -50);
-        glVertex2d(50, 50);
-        glVertex2d(0, 50);
-
-        glEnd();
+        {
+            glScalef(1.6f, 1.6f, 1.6f);     // make it smaller
+            callDisplayList(sphereDL);
+        }
         glPopMatrix();
-
-        glPushMatrix();
-        //glTranslated(x, y, 0);
-        SFT_Util.setColor(Color.red);
-
-
-        glPointSize(5f);
-        glBegin(GL_POINTS);
-        glVertex2d(0, 0);
-        glEnd();
-        glPopMatrix();
-
-        SFT_Util.setColor(Color.CYAN);
-
-
-
-        SFT_Util.printText(x, -y + 1000, "Obend!  3=========D ~~~~ \\ /^\\ /  (.^.)", sftf);
-
-        SFT_Util.printText(0, 0, "/_ ZERO", sftf);
-
-        SFT_Util.printText(0, 100, "/_ 0,100", sftf);
-
-        SFT_Util.printText(100, 100, "/_ 100,100", sftf);
-
-        SFT_Util.printText(50, 50, "x is " + x + " ; y is " + y + " , rotation is " + rotation + " ;", sftf);
+        
+        SFT_Util.print2DText(0, 0, "x is " + x + "; y is "+ y + ";", sftf);
     }
 
     @Override
@@ -117,17 +154,50 @@ public class JJTest implements Renderer {
 
         w.setVSync(true);
 
-        glMatrixMode(GL_PROJECTION);
-        glDisable(GL_DEPTH_TEST);
+
+        // Create sphere texture
+        marbleTextureHandle = makeTexture("data/images/tex1.png");
+
+        // Create texture for ground plane
+        groundTextureHandle = makeTexture("images/mahog_texture.jpg");
+
+        setPerspective((float) wi / (float) he);
+
+        setLight(GL_LIGHT1,
+                new float[]{1.0f, 1.0f, 1.0f, 1.0f}, // diffuse color
+                new float[]{0.2f, 0.2f, 0.2f, 1.0f}, // ambient
+                new float[]{1.0f, 1.0f, 1.0f, 1.0f}, // specular
+                lightPosition1);                         // position
+
+        // Create a directional light (dark red, to simulate reflection off wood surface)
+        setLight(GL_LIGHT2,
+                new float[]{0.95f, 0.35f, 0.15f, 1.0f}, // diffuse color
+                new float[]{0.0f, 0.0f, 0.0f, 1.0f}, // ambient
+                new float[]{0.03f, 0.0f, 0.0f, 1.0f}, // specular
+                lightPosition2);   // position (pointing up)
+
+        // Create a point light (dark blue, to simulate reflection off wood surface)
+        setLight(GL_LIGHT3,
+                new float[]{0.35f, 0.45f, 0.95f, 1.0f}, // diffuse color
+                new float[]{0.0f, 0.0f, 0.0f, 1.0f}, // ambient
+                new float[]{0.3f, 0.4f, 0.7f, 1.0f}, // specular
+                lightPosition3);   // position (pointing up)
+
+        sphereDL = beginDisplayList();
+        renderSphere();
+        endDisplayList();
+
+        cubeDL = beginDisplayList();
+        renderCube(10, 40);
+        endDisplayList();
+
+        // enable lighting and texture rendering
+        glEnable(GL_LIGHTING);
         glEnable(GL_TEXTURE_2D);
-        glDisable(GL_LIGHTING);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glLoadIdentity();
-        glOrtho(0, 800, 800, 0, 0, 1);
+
+        // select model view for subsequent transforms
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        glTranslatef(0.375f, 0.375f, 0);
     }
 
     @Override

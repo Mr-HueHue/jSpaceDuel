@@ -311,7 +311,7 @@ public class SFTEngineWindow extends Thread {
                         if (!Display.isVisible()) {
                             wait(1000); // FPS iw window is hidden/minimized etc
                         } else {
-                            wait(100); // FPS if window is covered
+                            wait(25); // FPS if window is covered
                         }
                     }
                 }

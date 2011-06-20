@@ -8,6 +8,8 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
 import org.lwjgl.opengl.GL11;
@@ -312,7 +314,7 @@ public class SFT_Util {
      * De-allocate the given texture (glDeleteTextures()).
      */
     public static void deleteTexture(int textureHandle) {
-        IntBuffer bufferTxtr = allocInts(1).put(textureHandle);;
+        IntBuffer bufferTxtr = allocInts(1).put(textureHandle);
         GL11.glDeleteTextures(bufferTxtr);
     }
 
@@ -719,7 +721,7 @@ public class SFT_Util {
                 0, 1, 0);                            // the Y axis is up
     }
 
-    public static void printText(float posx, float posy, String text, SFT_Font font) {
+    public static void print2DText(float posx, float posy, String text, SFT_Font font) {
         if (text != null) {
             // preserve current GL settings
             pushAttribOrtho();
@@ -742,6 +744,19 @@ public class SFT_Util {
                 setOrthoOff();
             }
             popAttrib();  // restore previous settings
+        }
+    }
+
+    
+    /**
+     * 
+     * @param text Text to p
+     * @param font 
+     */
+    public static void print3DText(String text, SFT_Font font) {
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, font.getTexture());
+        for (int i = 0; i < text.length(); i++) {
+            GL11.glCallList(font.getFontListBase() + (text.charAt(i) - 32));
         }
     }
 
@@ -1079,5 +1094,188 @@ public class SFT_Util {
         fa[3][2] = fb.get();
         fa[3][3] = fb.get();
         return fa;
+    }
+    public static ArrayList displayLists = new ArrayList();  // will hold display list IDs created by beginDisplayList()
+
+    /**
+     * Begin a display list. All following OpenGL geometry commands (up to endDisplayList())
+     * will be stored in a display list, not drawn to screen.
+     * <P>
+     * To use, create a display list in setup():
+     * <PRE>
+     *      int teapotID = beginDisplayList();
+     *      ... // run teapot render code here
+     *      endDisplayList();
+     * </PRE>
+     *
+     * Then call the display list later in render():
+     * <PRE>
+     *      callDisplayList(teapotID);
+     * </PRE>
+     *
+     * @return integer display list id
+     * @see endDisplayList(), callDisplayList(), destroyDisplayList()
+     */
+    public static int beginDisplayList() {
+        int DL_ID = GL11.glGenLists(1);         // Allocate 1 new Display List
+        GL11.glNewList(DL_ID, GL11.GL_COMPILE); // Start Building A List
+        displayLists.add(new Integer(DL_ID)); // save the list ID so we can delete it later (see destroyDisplayLists())
+        return DL_ID;
+    }
+
+    /**
+     * Finish display list creation.  Use this function only after calling
+     * beginDisplayList()
+     *
+     * @see beginDisplayList()
+     */
+    public static void endDisplayList() {
+        GL11.glEndList();
+    }
+
+    /**
+     * Render the geometry stored in a display list.  Use this function after
+     * calling beginDisplayList() and endDisplayList() to create a display list.
+     *
+     * @see beginDisplayList()
+     * @see endDisplayList()
+     */
+    public static void callDisplayList(int displayListID) {
+        GL11.glCallList(displayListID);
+    }
+
+    /**
+     * Delete the given display list ID.  Frees up resources on the graphics card.
+     */
+    public static void destroyDisplayList(int DL_ID) {
+        GL11.glDeleteLists(DL_ID, 1);
+    }
+
+    /**
+     * Clean up the allocated display lists.  Called by cleanUp() when app exits.
+     *
+     * @see cleanUp();
+     */
+    public static void destroyDisplayLists() {
+        while (displayLists.size() > 0) {
+            int displaylistID = ((Integer) displayLists.get(0)).intValue();
+            GL11.glDeleteLists(displaylistID, 1);
+            displayLists.remove(0);
+        }
+    }
+    public static FloatBuffer mtldiffuse = allocFloats(4);     // color of the lit surface
+    public static FloatBuffer mtlambient = allocFloats(4);     // color of the shadowed surface
+    public static FloatBuffer mtlspecular = allocFloats(4);    // reflection color (typically this is a shade of gray)
+    public static FloatBuffer mtlemissive = allocFloats(4);    // glow color
+    public static FloatBuffer mtlshininess = allocFloats(4);   // size of the reflection highlight
+    public static final float[] colorClear = {0f, 0f, 0f, 0f};
+    public static final float[] colorBlack = {0f, 0f, 0f, 1f};
+    public static final float[] colorWhite = {1f, 1f, 1f, 1f};
+    public static final float[] colorGray = {.5f, .5f, .5f, 1f};
+    public static final float[] colorRed = {1f, 0f, 0f, 1f};
+    public static final float[] colorGreen = {0f, 1f, 0f, 1f};
+    public static final float[] colorBlue = {0f, 0f, 1f, 1f};
+
+    /**
+     *  A simple way to set the current material properties to approximate a
+     *  "real" surface.  Provide the surface color (float[4]]) and shininess
+     *  value (range 0-1).
+     *  <P>
+     *  Sets diffuse material color to the surfaceColor and ambient material color
+     *  to surfaceColor/2.  Based on the shiny value (0-1), sets the specular
+     *  property to a color between black (0) and white (1), and sets the
+     *  shininess property to a value between 0 and 127.
+     *  <P>
+     *  Lighting must be enabled for material colors to take effect.
+     *  <P>
+     *  @param surfaceColor - must be float[4] {R,G,B,A}
+     *  @param reflection - a float from 0-1 (0=very matte, 1=very shiny)
+     */
+    public static void setMaterial(float[] surfaceColor, float reflection) {
+        /*mtldiffuse = allocFloats(4);
+        mtlambient = allocFloats(4);
+        mtlspecular = allocFloats(4);
+        mtlemissive = allocFloats(4);
+        mtlshininess = allocFloats(4);*/
+        float[] reflect = {reflection, reflection, reflection, 1}; // make a shade of gray
+        float[] ambient = {surfaceColor[0] * .5f, surfaceColor[1] * .5f, surfaceColor[2] * .5f, 1};  // darker surface color
+        mtldiffuse.put(surfaceColor).flip();     // surface directly lit
+        mtlambient.put(ambient).flip();          // surface in shadow
+        mtlspecular.put(reflect).flip();         // reflected light
+        mtlemissive.put(colorBlack).flip();      // no emissive light
+        // size of reflection
+        int openglShininess = ((int) (reflection * 127f));   // convert 0-1 to 0-127
+        if (openglShininess >= 0 && openglShininess <= 127) {
+            mtlshininess.put(new float[]{openglShininess, 0, 0, 0}).flip();
+        }
+        applyMaterial();
+    }
+
+    /**
+     *  Set the four material colors and calls glMaterial() to change the current
+     *  material color in OpenGL.  Lighting must be enabled for material colors to take effect.
+     *
+     *  @param shininess: size of reflection (0 is matte, 127 is pinpoint reflection)
+     */
+    public static void setMaterial(float[] diffuseColor, float[] ambientColor, float[] specularColor, float[] emissiveColor, float shininess) {
+        /*mtldiffuse = allocFloats(4);
+        mtlambient = allocFloats(4);
+        mtlspecular = allocFloats(4);
+        mtlemissive = allocFloats(4);
+        mtlshininess = allocFloats(4);*/
+        mtldiffuse.put(diffuseColor).flip();     // surface directly lit
+        mtlambient.put(ambientColor).flip();     // surface in shadow
+        mtlspecular.put(specularColor).flip();   // reflection color
+        mtlemissive.put(emissiveColor).flip();   // glow color
+        if (shininess >= 0 && shininess <= 127) {
+            mtlshininess.put(new float[]{shininess, 0, 0, 0}).flip();  // size of reflection 0=broad 127=pinpoint
+        }
+        applyMaterial();
+    }
+
+    /**
+     * Alter the material opacity by setting the diffuse material color
+     * alpha value to the given value
+     * @para alpha 0=transparent 1=opaque
+     */
+    public static void setMaterialAlpha(float alpha) {
+        if (alpha < 0) {
+            alpha = 0;
+        }
+        if (alpha > 1) {
+            alpha = 1;
+        }
+        mtldiffuse.put(3, alpha).flip();     // alpha value of diffuse color
+        applyMaterial();
+    }
+
+    /**
+     *  Call glMaterial() to activate these material properties in the OpenGL environment.
+     *  These properties will stay in effect until you change them or disable lighting.
+     */
+    public static void applyMaterial() {
+        GL11.glMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE, mtldiffuse);
+        GL11.glMaterial(GL11.GL_FRONT, GL11.GL_AMBIENT, mtlambient);
+        GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SPECULAR, mtlspecular);
+        GL11.glMaterial(GL11.GL_FRONT, GL11.GL_EMISSION, mtlemissive);
+        GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SHININESS, mtlshininess);
+    }
+
+    /**
+     *  Return a String array containing the path portion of a filename (result[0]),
+     *  and the fileame (result[1]).  If there is no path, then result[0] will be ""
+     *  and result[1] will be the full filename.
+     */
+    public static String[] getPathAndFile(String filename) {
+        String[] pathAndFile = new String[2];
+        Matcher matcher = Pattern.compile("^.*/").matcher(filename);
+        if (matcher.find()) {
+            pathAndFile[0] = matcher.group();
+            pathAndFile[1] = filename.substring(matcher.end());
+        } else {
+            pathAndFile[0] = "";
+            pathAndFile[1] = filename;
+        }
+        return pathAndFile;
     }
 }

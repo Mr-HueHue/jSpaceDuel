@@ -353,10 +353,7 @@ public class SFT_Image {
             }
         }
     }
-
-    //========================================================================
-    // Static functions to flip and scale images
-    //========================================================================
+    
     /**
      * Scale the given BufferedImage to width and height that are powers of two.
      * Return the new scaled BufferedImage.
