@@ -30,6 +30,11 @@ public class SFTEngineWindow extends Thread {
     private boolean renderenabled;
     private boolean vsync;
     private int vsynchrate;
+    
+    /**
+     * If the resulution was changed once, set true
+     */
+    boolean changedresolution = false;
 
     public SFTEngineWindow(Renderer r, String title) throws LWJGLException {
         this(r, 0, 0, true, title);
@@ -49,12 +54,12 @@ public class SFTEngineWindow extends Thread {
         vsync = false;
         vsynchrate = Display.getDisplayMode().getFrequency();
         r = renderer;
-        
+
         System.out.println("Current desktop mode:");
         System.out.println(Display.getDesktopDisplayMode().getWidth() + "x" + Display.getDesktopDisplayMode().getHeight() + "x" + Display.getDesktopDisplayMode().getBitsPerPixel() + " " + Display.getDesktopDisplayMode().getFrequency() + "Hz");
         setDisplayMode(width, heigth, fullscreen);
     }
-    
+
     /**
      * Lists all available display modes.
      */
@@ -210,7 +215,7 @@ public class SFTEngineWindow extends Thread {
             setDisplayMode(widthWindowed, heightWindowed, false);
         }
     }
-    
+
     /**
      * Information about the current mode
      * @return the currently activated mode
@@ -258,7 +263,7 @@ public class SFTEngineWindow extends Thread {
                 this.widthWindowed = width;
                 this.heightWindowed = height;
             }
-            
+
             this.width = targetDisplayMode.getWidth();
             this.height = targetDisplayMode.getHeight();
 
@@ -271,12 +276,17 @@ public class SFTEngineWindow extends Thread {
                 System.out.println("Setting windowed display mode now...");
                 Display.setDisplayMode(targetDisplayMode);
             }
-            r.changeResolution(width, this.height);
+            if (changedresolution) {
+                r.changeResolution(this.width, this.height);
+            } else {
+                changedresolution = true;
+            }
 
         } catch (LWJGLException e) {
             System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
         }
     }
+    
 
     /**
      * Main method which starts rendering.
@@ -385,13 +395,13 @@ public class SFTEngineWindow extends Thread {
     public boolean isMouseGrabbed() {
         return Mouse.isGrabbed();
     }
-    
+
     /**
      * Sets the mouse at this window position
      * @param screenX
      * @param screenY 
      */
     public static void setCursorPosition(int screenX, int screenY) {
-       	Mouse.setCursorPosition(screenX,screenY);
+        Mouse.setCursorPosition(screenX, screenY);
     }
 }

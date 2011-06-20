@@ -681,7 +681,7 @@ public class SFT_Util {
      * @param y
      * @param width   size of the viewport area, in pixels
      * @param height
-     * @return 
+     * @return the current aspect ratio
      *
      * @see setPerspective()
      * @see setOrtho()
@@ -697,8 +697,13 @@ public class SFT_Util {
      *
      * @see setViewport(int,int,int,int)
      */
-    public static void resetViewport() {
-        setViewport(0, 0, Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight());
+    public static float resetViewport() {
+        return setViewport(0, 0, Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight());
+    }
+
+    public static float viewportReshape(int width, int height) {
+        GL11.glViewport(0, 0, width, height);
+        return (float) width / (float) height;
     }
 
     /**
@@ -747,7 +752,6 @@ public class SFT_Util {
         }
     }
 
-    
     /**
      * 
      * @param text Text to p

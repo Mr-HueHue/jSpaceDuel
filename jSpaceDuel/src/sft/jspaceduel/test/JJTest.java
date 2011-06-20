@@ -74,7 +74,7 @@ public class JJTest implements Renderer {
         // draw the ground plane
         glPushMatrix();
         {
-            glTranslatef(0f, x*0.1f, y*0.1f); // down a bit
+            glTranslatef(0f, x * 0.1f, y * 0.1f); // down a bit
             callDisplayList(cubeDL);
         }
         glPopMatrix();
@@ -141,8 +141,8 @@ public class JJTest implements Renderer {
             callDisplayList(sphereDL);
         }
         glPopMatrix();
-        
-        SFT_Util.print2DText(0, 0, "x is " + x + "; y is "+ y + ";", sftf);
+
+        SFT_Util.print2DText(0, 0, "x is " + x + "; y is " + y + ";", sftf);
     }
 
     @Override
@@ -160,6 +160,9 @@ public class JJTest implements Renderer {
 
         // Create texture for ground plane
         groundTextureHandle = makeTexture("images/mahog_texture.jpg");
+
+
+
 
         setPerspective((float) wi / (float) he);
 
@@ -195,9 +198,13 @@ public class JJTest implements Renderer {
         glEnable(GL_LIGHTING);
         glEnable(GL_TEXTURE_2D);
 
+        glEnable(GL_DEPTH_TEST);
+
         // select model view for subsequent transforms
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
+
+        //glViewport(0, 0, 500, 500);
     }
 
     @Override
@@ -247,15 +254,13 @@ public class JJTest implements Renderer {
         y = 600;
         }*/
     }
+    boolean changedf = false;
 
     @Override
     public void changeResolution(int width, int height) {
         wi = width;
         he = height;
-        //glViewport(0, 0, wi, he); //NEW
-        //glMatrixMode(GL_PROJECTION);
-        //glLoadIdentity();
-        //GLU.gluOrtho2D(0, wi, he, 0);
-
+        System.out.println("changing resolution to"+ width + "x" + height);
+        SFT_Util.setPerspective(SFT_Util.viewportReshape(width, height));
     }
 }
