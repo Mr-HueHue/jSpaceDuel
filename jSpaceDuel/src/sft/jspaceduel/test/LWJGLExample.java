@@ -12,7 +12,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import sft.sftengine.util.InitLibraries;
+import sft.sftengine.util.SFT_Libraries;
 
 /**
  * @author jediTofu
@@ -39,7 +39,7 @@ public class LWJGLExample {
 
   public static void main(String[] args) {
       
-    InitLibraries.addlwjgl();
+    SFT_Libraries.addlwjgl();
 
     LWJGLExample main = null;
     try {

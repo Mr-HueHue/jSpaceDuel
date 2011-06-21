@@ -6,7 +6,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import sft.sftengine.util.InitLibraries;
+import sft.sftengine.util.SFT_Libraries;
 
 /**
  *
@@ -45,7 +45,7 @@ public class SFTEngineWindow extends Thread {
     }
 
     private SFTEngineWindow(Renderer renderer, int width, int heigth, boolean fullscreen, String title) throws LWJGLException {
-        InitLibraries.addlwjgl();
+        SFT_Libraries.addlwjgl();
         this.height = heigth;
         this.width = width;
         this.fullscreen = fullscreen;
@@ -321,7 +321,7 @@ public class SFTEngineWindow extends Thread {
                         if (!Display.isVisible()) {
                             wait(1000); // FPS iw window is hidden/minimized etc
                         } else {
-                            wait(25); // FPS if window is covered
+                            wait(50); // FPS if window is covered
                         }
                     }
                 }

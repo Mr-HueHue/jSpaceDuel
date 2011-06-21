@@ -1,7 +1,7 @@
 package sft.jspaceduel.test;
 
 import org.lwjgl.LWJGLException;
-import sft.sftengine.util.InitLibraries;
+import sft.sftengine.util.SFT_Libraries;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
@@ -13,7 +13,7 @@ import org.lwjgl.input.*;
  */
 public class InputTest {
 	public static void main(String[] args) throws LWJGLException {
-		InitLibraries.addlwjgl();
+		SFT_Libraries.addlwjgl();
 		InputTest test = new InputTest();
 	}
 

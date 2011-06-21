@@ -7,7 +7,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.util.glu.GLU.*;
 import static org.lwjgl.opengl.GL11.*;
-import sft.sftengine.util.InitLibraries;
+import sft.sftengine.util.SFT_Libraries;
 
 /**
  *
@@ -16,7 +16,7 @@ import sft.sftengine.util.InitLibraries;
 public class gschichtn {
 
     public static void main(String[] args) {
-        InitLibraries.addlwjgl();
+        SFT_Libraries.addlwjgl();
         new gschichtn();
     }
     public static final int DISPLAY_HEIGHT = 700;

@@ -810,8 +810,10 @@ public class SFT_Util {
         GL11.glLight(GLLightHandle, GL11.GL_SPECULAR, ltSpecular); // color of the highlight
         GL11.glLight(GLLightHandle, GL11.GL_AMBIENT, ltAmbient);   // color of the reflected light
         GL11.glLight(GLLightHandle, GL11.GL_POSITION, ltPosition);
-        GL11.glEnable(GLLightHandle);	// Enable the light (GL_LIGHT1 - 7)
-        //GL11.glLightf(GLLightHandle, GL11.GL_QUADRATIC_ATTENUATION, .005F);    // how light beam drops off
+        GL11.glEnable(GLLightHandle);                               // Enable the light (GL_LIGHT1 - 7)
+        //GL11.glLightf(GLLightHandle, GL11.GL_CONSTANT_ATTENUATION, 2F);    // how light beam drops off
+        //GL11.glLightf(GLLightHandle, GL11.GL_LINEAR_ATTENUATION, .5F); // how light beam drops off
+        GL11.glLightf(GLLightHandle, GL11.GL_QUADRATIC_ATTENUATION, .005F);    // how light beam drops off
     }
 
     public static void setSpotLight(int GLLightHandle,

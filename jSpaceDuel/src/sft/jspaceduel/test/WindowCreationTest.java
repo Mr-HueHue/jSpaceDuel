@@ -37,7 +37,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-import sft.sftengine.util.InitLibraries;
+import sft.sftengine.util.SFT_Libraries;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -275,7 +275,7 @@ public class WindowCreationTest {
 	 * @param args ignored params to app
 	 */
 	public static void main(String[] args) throws LWJGLException {
-                InitLibraries.addlwjgl();
+                SFT_Libraries.addlwjgl();
 		System.out.println("The following keys are available:\n" +
 		                   "ESCAPE:\t\tExit test\n" +
 		                   "ARROW Keys:\tMove window when in non-fullscreen mode\n" +

@@ -35,7 +35,7 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
-import sft.sftengine.util.InitLibraries;
+import sft.sftengine.util.SFT_Libraries;
 
 /**
  * <br>
@@ -175,7 +175,7 @@ public class SysTest {
      * @param args ignored
      */
     public static void main(String[] args) {
-        InitLibraries.addlwjgl();
+        SFT_Libraries.addlwjgl();
         new SysTest().executeTest();
         System.exit(0);
     }
