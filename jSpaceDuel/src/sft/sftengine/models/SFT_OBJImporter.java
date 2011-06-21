@@ -1,13 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package sft.sftengine.models;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 
-    /*
+/*
  * Read an OBJ file and load it into a GL_Mesh.  GL_Mesh is a basic
  * mesh object that holds vertex and triangle data.  The GL_OBJ_Reader
  * loads data pretty much as it is in the OBJ, and this Importer converts
@@ -26,11 +22,11 @@ import java.util.ArrayList;
  */
 public class SFT_OBJImporter {
 
-	private SFT_OBJReader reader = null;
-	private SFT_Mesh mesh = null;
+    private SFT_OBJReader reader = null;
+    private SFT_Mesh mesh = null;
 
-	public SFT_OBJImporter() {
-	}
+    public SFT_OBJImporter() {
+    }
 
     public SFT_Mesh load(String filename) {
         System.out.println("GL_OBJ_Importer.import(): Load object from OBJ " + filename);
@@ -46,9 +42,9 @@ public class SFT_OBJImporter {
         return makeMeshObject(reader);
     }
 
-	/**
-	 * create a GL_Mesh (mesh object) from the data read by a GL_OBJ_Reader
-	 */
+    /**
+     * create a GL_Mesh (mesh object) from the data read by a GL_OBJ_Reader
+     */
     public SFT_Mesh makeMeshObject(SFT_OBJReader objData) {
         ArrayList verts = objData.vertices;
         ArrayList txtrs = objData.textureCoords;
@@ -59,12 +55,12 @@ public class SFT_OBJImporter {
         mesh = new SFT_Mesh();
         mesh.name = objData.filename;
         mesh.materialLibeName = objData.materialLibeName;
-        mesh.materials = (objData.materialLib != null)? objData.materialLib.materials : null;
+        mesh.materials = (objData.materialLib != null) ? objData.materialLib.materials : null;
 
         // add verts to GL_Mesh
         for (int i = 0; i < verts.size(); i++) {
             float[] coords = (float[]) verts.get(i);
-			mesh.addVertex(coords[0], coords[1], coords[2]);
+            mesh.addVertex(coords[0], coords[1], coords[2]);
         }
 
         // allocate space for groups
@@ -73,15 +69,15 @@ public class SFT_OBJImporter {
         // init each group (allocate space for triangles)
         for (int g = 0; g < objData.numGroups(); g++) {
             mesh.initGroup(g,
-                          objData.getGroupName(g),
-                          objData.getGroupMaterialName(g),
-                          objData.getGroupTriangleCount(g));
+                    objData.getGroupName(g),
+                    objData.getGroupMaterialName(g),
+                    objData.getGroupTriangleCount(g));
         }
 
         // add triangles to GL_Mesh.  OBJ "face" may be a triangle,
         // quad or polygon.  Convert all faces to triangles.
         for (int g = 0; g < objData.numGroups(); g++) {
-            int triCount=0;
+            int triCount = 0;
             faces = objData.getGroupFaces(g);
             for (int i = 0; i < faces.size(); i++) {
                 SFT_Face face = (SFT_Face) faces.get(i);
@@ -89,15 +85,13 @@ public class SFT_OBJImporter {
                 if (face.vertexIDs.length == 3) {
                     addTriangle(mesh, g, triCount, face, txtrs, norms, 0, 1, 2, face.materialID);
                     triCount++;
-                }
-                else if (face.vertexIDs.length == 4) {
+                } else if (face.vertexIDs.length == 4) {
                     // convert quad to two triangles
                     addTriangle(mesh, g, triCount, face, txtrs, norms, 0, 1, 2, face.materialID);
                     triCount++;
                     addTriangle(mesh, g, triCount, face, txtrs, norms, 0, 2, 3, face.materialID);
                     triCount++;
-                }
-                else {
+                } else {
                     // convert polygon to triangle fan, with first vertex (0)
                     // at center:  0,1,2   0,2,3   0,3,4   0,4,5
                     for (int n = 0; n < face.vertexIDs.length - 2; n++) {
@@ -108,16 +102,16 @@ public class SFT_OBJImporter {
             }
         }
 
-		// optimize the GL_Mesh
-		mesh.rebuild();
+        // optimize the GL_Mesh
+        mesh.rebuild();
 
         // if no normals were loaded, generate some
         if (norms.isEmpty()) {
-        	mesh.regenerateNormals();
+            mesh.regenerateNormals();
         }
 
-		return mesh;
-	}
+        return mesh;
+    }
 
     /**
      * Add a new triangle to the GL_Mesh.  This assumes that the
@@ -137,14 +131,14 @@ public class SFT_OBJImporter {
      * @return
      */
     public SFT_Triangle addTriangle(SFT_Mesh obj, int groupNum, int triNum, SFT_Face face,
-                                   ArrayList txtrs, ArrayList norms,
-                                   int v1, int v2, int v3, int mtlID) {
+            ArrayList txtrs, ArrayList norms,
+            int v1, int v2, int v3, int mtlID) {
         // An OBJ face may have many vertices (can be a polygon).
         // Make a new triangle with the specified three verts.
         SFT_Triangle t = new SFT_Triangle(
-            obj.vertex(face.vertexIDs[v1]),
-            obj.vertex(face.vertexIDs[v2]),
-            obj.vertex(face.vertexIDs[v3]));
+                obj.vertex(face.vertexIDs[v1]),
+                obj.vertex(face.vertexIDs[v2]),
+                obj.vertex(face.vertexIDs[v3]));
 
         // put texture coords into triangle
         if (txtrs.size() > 0) { // if texture coords were loaded
@@ -168,8 +162,8 @@ public class SFT_OBJImporter {
             t.norm3 = new SFT_Vector(norm[0], norm[1], norm[2]);
         }
 
-	// store material number in triangle
-	t.materialID = mtlID;
+        // store material number in triangle
+        t.materialID = mtlID;
 
         // add triangle to given group in GL_Mesh
         obj.addTriangle(t, groupNum, triNum);

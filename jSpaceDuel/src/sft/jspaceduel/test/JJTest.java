@@ -4,6 +4,7 @@ import java.awt.Font;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.glu.GLU;
 import static org.lwjgl.opengl.GL11.*;
 import static sft.sftengine.util.SFT_Util.*;
@@ -54,6 +55,9 @@ public class JJTest implements Renderer {
 
     @Override
     public void init() {
+        
+        mx = wi/2;
+        my = he/2;
         
         by=0;
         bx=0;

@@ -1,16 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package sft.sftengine.models;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-/**
- *
- * @author JJ
- */
 /**
  * A 3D vector, with functions to perform common vector math operations.
  */
@@ -191,7 +180,7 @@ public class SFT_Vector {
      * Return a copy of the vector
      */
     public SFT_Vector getClone() {
-        return new SFT_Vector(x,y,z);
+        return new SFT_Vector(x, y, z);
     }
 
     /**
@@ -352,6 +341,6 @@ public class SFT_Vector {
      * return a vector rotated the given number of degrees around the Y axis  
      */
     public static SFT_Vector rotationVector(float degrees) {
-        return new SFT_Vector((float) Math.sin(degrees * (Math.PI / 180)),0,(float) Math.cos(degrees * (Math.PI / 180)));
+        return new SFT_Vector((float) Math.sin(degrees * (Math.PI / 180)), 0, (float) Math.cos(degrees * (Math.PI / 180)));
     }
 }

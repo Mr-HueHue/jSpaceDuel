@@ -1,7 +1,5 @@
 package sft.sftengine.models;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import org.lwjgl.opengl.GL11;
 import sft.sftengine.util.SFT_Util;
@@ -12,44 +10,41 @@ import sft.sftengine.util.SFT_Util;
  */
 public class SFT_Material {
     // A sampling of color values
-    public static final float colorClear[]          = {  0f,  0f,  0f,  0f}; // alpha is 0
-    public static final float colorNone[]           = {  0f,  0f,  0f,  1f}; // no color = black
-    public static final float colorRed[]            = {  1f,  0f,  0f,  1f};
-    public static final float colorGreen[]          = {  0f,  1f,  0f,  1f};
-    public static final float colorBlue[]           = {  0f,  0f,  1f,  1f};
-    public static final float colorYellow[]         = {  1f,  1f,  0f,  1f};
-    public static final float colorCyan[]           = {  0f,  1f,  1f,  1f};
-    public static final float colorMagenta[]        = {  1f,  0f,  1f,  1f};
-    public static final float colorGrayLight[]      = { .8f, .8f, .8f,  1f};
-    public static final float colorGrayMedium[]     = { .5f, .5f, .5f,  1f};
-    public static final float colorGrayDark[]       = { .2f, .2f, .2f,  1f};
-    public static final float colorWhite[]          = {  1f,  1f,  1f,  1f};
-    public static final float colorBlack[]          = {  0f,  0f,  0f,  1f};
-    public static final float colorBeige[]          = { .7f, .7f, .4f,  1f};
-    public static final float colorDefaultDiffuse[] = { .8f, .8f, .8f,  1f}; // OpenGL default diffuse color
-    public static final float colorDefaultAmbient[] = { .2f, .2f, .2f,  1f}; // OpenGL default ambient color
-    public static final float minShine   = 0.0f;
-    public static final float maxShine   = 127.0f;
 
+    public static final float colorClear[] = {0f, 0f, 0f, 0f}; // alpha is 0
+    public static final float colorNone[] = {0f, 0f, 0f, 1f}; // no color = black
+    public static final float colorRed[] = {1f, 0f, 0f, 1f};
+    public static final float colorGreen[] = {0f, 1f, 0f, 1f};
+    public static final float colorBlue[] = {0f, 0f, 1f, 1f};
+    public static final float colorYellow[] = {1f, 1f, 0f, 1f};
+    public static final float colorCyan[] = {0f, 1f, 1f, 1f};
+    public static final float colorMagenta[] = {1f, 0f, 1f, 1f};
+    public static final float colorGrayLight[] = {.8f, .8f, .8f, 1f};
+    public static final float colorGrayMedium[] = {.5f, .5f, .5f, 1f};
+    public static final float colorGrayDark[] = {.2f, .2f, .2f, 1f};
+    public static final float colorWhite[] = {1f, 1f, 1f, 1f};
+    public static final float colorBlack[] = {0f, 0f, 0f, 1f};
+    public static final float colorBeige[] = {.7f, .7f, .4f, 1f};
+    public static final float colorDefaultDiffuse[] = {.8f, .8f, .8f, 1f}; // OpenGL default diffuse color
+    public static final float colorDefaultAmbient[] = {.2f, .2f, .2f, 1f}; // OpenGL default ambient color
+    public static final float minShine = 0.0f;
+    public static final float maxShine = 127.0f;
     // Default material values
     private static FloatBuffer defaultDiffuse = SFT_Util.allocFloats(colorDefaultDiffuse);
     private static FloatBuffer defaultAmbient = SFT_Util.allocFloats(colorDefaultAmbient);
     private static FloatBuffer defaultSpecular = SFT_Util.allocFloats(colorNone);
     private static FloatBuffer defaultEmission = SFT_Util.allocFloats(colorNone);
-    private static FloatBuffer defaultShine = SFT_Util.allocFloats(new float[] {minShine,0,0,0}); // LWJGL requires four values, so include three extra zeroes
-
+    private static FloatBuffer defaultShine = SFT_Util.allocFloats(new float[]{minShine, 0, 0, 0}); // LWJGL requires four values, so include three extra zeroes
     // The color values for this material
     public FloatBuffer diffuse;      // color of the lit surface
     public FloatBuffer ambient;      // color of the shadowed surface
     public FloatBuffer specular;     // reflection color (typically this is a shade of gray)
     public FloatBuffer emission;     // glow color
     public FloatBuffer shininess;    // size of the reflection highlight
-
     // hold name and texture values for this material
     public String mtlname = "noname";  // name of this material in the .mtl and .obj files
     public String textureFile = null;  // texture filename (null if no texture)
     public int textureHandle;          // opengl handle to the texture (0 if no texture)
-
 
     public SFT_Material() {
         setDefaults();
@@ -60,9 +55,9 @@ public class SFT_Material {
         setColor(color);
     }
 
-	/**
-	 *  Set the material to OpenGL's default values (gray, with no reflection and no glow)
-	 */
+    /**
+     *  Set the material to OpenGL's default values (gray, with no reflection and no glow)
+     */
     public final void setDefaults() {
         setDiffuse(colorDefaultDiffuse);
         setAmbient(colorDefaultAmbient);
@@ -71,46 +66,45 @@ public class SFT_Material {
         setShininess(minShine);
     }
 
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 *
-	 * Functions to set the material properties
-	 *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-	/**
-	 *  Set the diffuse material color.  This is the color of the material
-	 *  where it is directly lit.
-	 */
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     *
+     * Functions to set the material properties
+     *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    /**
+     *  Set the diffuse material color.  This is the color of the material
+     *  where it is directly lit.
+     */
     public void setDiffuse(float[] color) {
         diffuse = SFT_Util.allocFloats(color);
     }
 
-	/**
-	 *  Set the ambient material color.  This is the color of the material
-	 *  where it is lit by indirect light (light scattered off the environment).
-	 *  Ie. the shadowed side of an object.
-	 */
+    /**
+     *  Set the ambient material color.  This is the color of the material
+     *  where it is lit by indirect light (light scattered off the environment).
+     *  Ie. the shadowed side of an object.
+     */
     public void setAmbient(float[] color) {
         ambient = SFT_Util.allocFloats(color);
     }
 
-	/**
-	 *  Set the specular material color.  This controls how much light
-	 *  is reflected off a glossy surface.  This color value describes
-	 *  the brightness of the reflection and is typically a shade of gray.
-	 *  Pure black means that no light is reflected (ie. a very rough matte
-	 *  surface).  Pure white means that the surface is highly reflective,
-	 *
-	 *  see also:  setShininess()
-	 */
+    /**
+     *  Set the specular material color.  This controls how much light
+     *  is reflected off a glossy surface.  This color value describes
+     *  the brightness of the reflection and is typically a shade of gray.
+     *  Pure black means that no light is reflected (ie. a very rough matte
+     *  surface).  Pure white means that the surface is highly reflective,
+     *
+     *  see also:  setShininess()
+     */
     public void setSpecular(float[] color) {
         specular = SFT_Util.allocFloats(color);
     }
 
-	/**
-	 *  Set the emission material color.  This controls the "glow" of the material,
-	 *  and can be used to make a material that seems to be lit from inside.
-	 */
+    /**
+     *  Set the emission material color.  This controls the "glow" of the material,
+     *  and can be used to make a material that seems to be lit from inside.
+     */
     public void setEmission(float[] color) {
         emission = SFT_Util.allocFloats(color);
     }
@@ -124,7 +118,7 @@ public class SFT_Material {
      */
     public void setShininess(float howShiny) {
         if (howShiny >= minShine && howShiny <= maxShine) {
-            float[] tmp = {howShiny,0,0,0};
+            float[] tmp = {howShiny, 0, 0, 0};
             shininess = SFT_Util.allocFloats(tmp);
         }
     }
@@ -134,7 +128,7 @@ public class SFT_Material {
      *  These properties will stay in effect until you change them or disable lighting.
      */
     public void apply() {
-    	// GL_FRONT: affect only front facing triangles
+        // GL_FRONT: affect only front facing triangles
         GL11.glMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE, diffuse);
         GL11.glMaterial(GL11.GL_FRONT, GL11.GL_AMBIENT, ambient);
         GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SPECULAR, specular);
@@ -153,20 +147,19 @@ public class SFT_Material {
         GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SHININESS, defaultShine);
     }
 
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 *
-	 * The following functions provide a simpler way to use materials
-	 * that hides some of the complexity of the OpenGL functions.
-	 *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-	/**
-	 *  Sets the material color to approximate a "real" surface color.
-	 *
-	 *  Use the same color for diffuse and ambient.  To create a
-	 *  shadowed effect you should lower the ambient value for the
-	 *  light sources and lower the overall ambient light.
-	 */
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     *
+     * The following functions provide a simpler way to use materials
+     * that hides some of the complexity of the OpenGL functions.
+     *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    /**
+     *  Sets the material color to approximate a "real" surface color.
+     *
+     *  Use the same color for diffuse and ambient.  To create a
+     *  shadowed effect you should lower the ambient value for the
+     *  light sources and lower the overall ambient light.
+     */
     public void setColor(float[] color) {
         setDiffuse(color);   // surface directly lit
         setAmbient(color);   // surface in shadow
@@ -185,9 +178,9 @@ public class SFT_Material {
      *           setReflection(.5f,.5f)  creates a softer, wider reflection
      */
     public void setReflection(float intensity, float highlight) {
-		float[] color = {intensity,intensity,intensity,1}; // create a shade of gray
+        float[] color = {intensity, intensity, intensity, 1}; // create a shade of gray
         setSpecular(color);
-        setShininess((int)(highlight*127f)); // convert 0-1 to 0-127
+        setShininess((int) (highlight * 127f)); // convert 0-1 to 0-127
     }
 
     /**
@@ -215,12 +208,11 @@ public class SFT_Material {
         return diffuse.get(3);
     }
 
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 *
-	 * functions to add a texture to this material
-	 *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     *
+     * functions to add a texture to this material
+     *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     /**
      * Store a texture filename with the material.
      */
@@ -256,5 +248,4 @@ public class SFT_Material {
     public String getName() {
         return mtlname;
     }
-
 }

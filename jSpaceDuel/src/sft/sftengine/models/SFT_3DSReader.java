@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-    /**
+/**
  * Reads a 3DS file (3D Studio Max) into ArrayLists.  Data is read
  * into vertex, normal, texture coodinate and face lists.  Rendering
  * and mesh manipulation are done by calling classes.
@@ -25,33 +25,26 @@ public class SFT_3DSReader {
     public ArrayList normals = new ArrayList();     // Contains float[3] for each normal
     public ArrayList textureCoords = new ArrayList();  // Contains float[3] for each texture map coord (UVW)
     public ArrayList faces = new ArrayList();       // Contains Face objects
-
     private int currentId;
     private int nextOffset;
-
     private String currentObjectName = null;
     private boolean endOfStream = false;
 
-
     public SFT_3DSReader() {
     }
-    
 
     public SFT_3DSReader(String filename) {  // Construct from file name
         loadobject(filename);
     }
 
-    
     public final void loadobject(String filename) {  // load from String filename
-    	// Load it
-    	try {
-    		load3DSFromStream(new FileInputStream(filename));
-    	}
-    	catch (Exception e) {
-    		System.out.println("GL_3DS_Reader.loadobject(): Exception when reading file: " + filename + " " + e);
-    	}
+        // Load it
+        try {
+            load3DSFromStream(new FileInputStream(filename));
+        } catch (Exception e) {
+            System.out.println("GL_3DS_Reader.loadobject(): Exception when reading file: " + filename + " " + e);
+        }
     }
-
 
     // load an object 
     // ASSUMES ONLY ONE object in 3ds file
@@ -67,17 +60,17 @@ public class SFT_3DSReader {
             while (!endOfStream) {
                 readNext(in); // will load into currentObject
             }
+        } catch (Throwable ignored) {
         }
-        catch (Throwable ignored) {}
         return true;
     }
-
 
     private String readString(InputStream in) throws IOException {
         String result = new String();
         byte inByte;
-        while ( (inByte = (byte) in.read()) != 0)
+        while ((inByte = (byte) in.read()) != 0) {
             result += (char) inByte;
+        }
         return result;
     }
 
@@ -101,7 +94,7 @@ public class SFT_3DSReader {
 
     private void readNext(InputStream in) throws IOException {
         readHeader(in);
-       if (currentId == 0x3D3D) {  // Mesh block
+        if (currentId == 0x3D3D) {  // Mesh block
             return;
         }
         if (currentId == 0x4000) {   // Object block
@@ -155,7 +148,7 @@ public class SFT_3DSReader {
             y = z;
             z = -tmpy;
             // add vertex to the list
-            vertices.add( new float[] {x, y, z} );
+            vertices.add(new float[]{x, y, z});
         }
     }
 
@@ -168,15 +161,15 @@ public class SFT_3DSReader {
      * list will be same as indices into the vertex list.  We're not
      * loading normals so null that out.
      */
-    private void readPointList(InputStream in) throws IOException { 
+    private void readPointList(InputStream in) throws IOException {
         int triangles = readShort(in);
         for (int i = 0; i < triangles; i++) {
             int[] vertexIDs = new int[3];
-        	vertexIDs[0] = readShort(in);
-        	vertexIDs[1] = readShort(in);
-        	vertexIDs[2] = readShort(in);
+            vertexIDs[0] = readShort(in);
+            vertexIDs[1] = readShort(in);
+            vertexIDs[2] = readShort(in);
             readShort(in);
-            faces.add( new SFT_Face(vertexIDs,vertexIDs,null) );
+            faces.add(new SFT_Face(vertexIDs, vertexIDs, null));
         }
     }
 
@@ -187,7 +180,7 @@ public class SFT_3DSReader {
             uvw[0] = readFloat(in);
             uvw[1] = readFloat(in);
             uvw[2] = 0f;
-            textureCoords.add( uvw );
+            textureCoords.add(uvw);
         }
     }
 }
