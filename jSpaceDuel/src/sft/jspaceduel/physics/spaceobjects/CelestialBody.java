@@ -2,18 +2,20 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package sft.jspaceduel.spaceObjects;
+package sft.jspaceduel.physics.spaceobjects;
 
-import sft.jspaceduel.util.AstroPhysics;
+import sft.jspaceduel.physics.Kinematics;
+import sft.jspaceduel.physics.PhysicsEngine;
+import sft.jspaceduel.physics.AstroPhysics;
 
 /**
  *
  * @author michael
  */
-public abstract class CelestialBody extends SpaceObject implements GravityCenter, Collider {
+public abstract class CelestialBody extends SpaceObject implements Attractor, Collider {
     double mass;
     
-    public CelestialBody(SpaceObjectManager reg, PosParams posParams, double mass) {
+    public CelestialBody(PhysicsEngine reg, Kinematics posParams, double mass) {
         super(reg, posParams);
     }
     

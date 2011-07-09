@@ -1,4 +1,4 @@
-package sft.jspaceduel.spaceObjects;
+package sft.jspaceduel.physics.spaceobjects;
 
 /**
  *

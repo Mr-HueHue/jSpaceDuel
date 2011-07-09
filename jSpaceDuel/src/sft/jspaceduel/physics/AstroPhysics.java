@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package sft.jspaceduel.util;
+package sft.jspaceduel.physics;
 
 /**
  *
@@ -19,5 +19,9 @@ public class AstroPhysics {
     
     public static double starTemperature(double luminosity,double radius) {
         return 7.26952585e-6*Math.pow(luminosity/(radius*radius), 0.25);
+    }
+    
+    public static double starTemperature(double mass) {
+        return starTemperature(starLuminosity(mass),starRadius(mass));
     }
 }

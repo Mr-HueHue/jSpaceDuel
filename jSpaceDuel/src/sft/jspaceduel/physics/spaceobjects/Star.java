@@ -1,4 +1,6 @@
-package sft.jspaceduel.spaceObjects;
+package sft.jspaceduel.physics.spaceobjects;
+
+import sft.jspaceduel.physics.PhysicsEngine;
 
 /**
  *
@@ -7,7 +9,7 @@ package sft.jspaceduel.spaceObjects;
 public class Star extends CelestialBody implements LightSource {
     public double luminosity;
     
-    public Star(SpaceObjectManager reg, double[] pos, double[] v, double mass, double angle, double angularVelocity) {
+    public Star(PhysicsEngine reg, double[] pos, double[] v, double mass, double angle, double angularVelocity) {
         super(reg, pos, v, mass, angle, angularVelocity, getRadius());
         calcLuminosity();
         reg.registerLightSource(this);
