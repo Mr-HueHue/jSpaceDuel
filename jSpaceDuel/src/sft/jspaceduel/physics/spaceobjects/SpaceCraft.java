@@ -1,6 +1,6 @@
-package sft.jspaceduel.spaceObjects;
+package sft.jspaceduel.physics.spaceobjects;
 
-import sft.jspaceduel.spaceObjects.SpaceObject;
+import sft.jspaceduel.physics.spaceobjects.SpaceObject;
 
 /**
  *
