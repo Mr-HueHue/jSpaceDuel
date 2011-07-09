@@ -1,9 +1,13 @@
 package sft.sftengine.graphics;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.JFrame;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import sft.sftengine.util.SFT_Libraries;
@@ -15,6 +19,8 @@ import sft.sftengine.util.SFT_Libraries;
 public class SFTEngineWindow extends Thread {
 
     Renderer r;
+    JFrame f;
+    AWTGLCanvas c;
     int heightWindowed, widthWindowed;
     int heightFull, widthFull;
     int height, width;
@@ -30,26 +36,48 @@ public class SFTEngineWindow extends Thread {
     private boolean renderenabled;
     private boolean vsync;
     private int vsynchrate;
-    
+    mode m;
     /**
      * If the resulution was changed once, set true
      */
     boolean changedresolution = false;
 
+    public enum mode {
+
+        JFRAME, NATIVEDISPLAY;
+    }
+
     public SFTEngineWindow(Renderer r, String title) throws LWJGLException {
-        this(r, 0, 0, true, title);
+        this(mode.NATIVEDISPLAY, r, 0, 0, true, title);
     }
 
     public SFTEngineWindow(Renderer r, int width, int heigth, String title) throws LWJGLException {
-        this(r, width, heigth, false, title);
+        this(mode.NATIVEDISPLAY, r, width, heigth, false, title);
     }
 
-    private SFTEngineWindow(Renderer renderer, int width, int heigth, boolean fullscreen, String title) throws LWJGLException {
+    private SFTEngineWindow(mode m, Renderer renderer, int width, int heigth, boolean fullscreen, String title) throws LWJGLException {
         SFT_Libraries.addlwjgl();
         this.height = heigth;
         this.width = width;
         this.fullscreen = fullscreen;
-        Display.setTitle(title);
+        this.m = m;
+        if (m == mode.JFRAME) {
+            f = new JFrame(title);
+            f.setSize(width, height);
+            f.setResizable(false);
+            f.add(c);
+            f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            f.addWindowListener(new WindowAdapter() {
+
+                @Override
+                public void windowClosing(WindowEvent ev) {
+                    renderenabled = false;
+                }
+            });
+        } else if (m == mode.NATIVEDISPLAY) {
+            Display.setTitle(title);
+        }
+
         renderenabled = true;
         vsync = false;
         vsynchrate = Display.getDisplayMode().getFrequency();
@@ -77,7 +105,11 @@ public class SFTEngineWindow extends Thread {
      * @param title the text to be set
      */
     public void setTitle(String title) {
-        Display.setTitle(title);
+        if (m == m.NATIVEDISPLAY) {
+            Display.setTitle(title);
+        } else {
+            f.setTitle(title);
+        }
     }
 
     /**
@@ -85,7 +117,8 @@ public class SFTEngineWindow extends Thread {
      */
     public void create() {
         try {
-            Display.create();
+            //Display.create();
+            f.setVisible(true);
             Mouse.create();
             Keyboard.create();
         } catch (LWJGLException e) {
@@ -122,7 +155,11 @@ public class SFTEngineWindow extends Thread {
             } else {
                 System.out.println("Disabling vsynching...");
             }
-            Display.setVSyncEnabled(enable);
+            if (m == mode.NATIVEDISPLAY) {
+                Display.setVSyncEnabled(enable);
+            } else {
+                c.setVSyncEnabled(enable);
+            }
         }
     }
 
@@ -148,8 +185,18 @@ public class SFTEngineWindow extends Thread {
      * @param posy 
      */
     public void moveWindow(int posx, int posy) {
-        if (isWindowed()) {
-            Display.setLocation(posx, posy);
+        if (m == mode.NATIVEDISPLAY) {
+            if (isWindowed()) {
+                Display.setLocation(posx, posy);
+            }
+        } else if (m == mode.JFRAME) {
+            if (isWindowed()) {
+                if (posx == -1 && posy == -1) {
+                    f.setLocationRelativeTo(null);
+                } else {
+                    f.setLocation(posx, posy);
+                }
+            }
         }
     }
 
@@ -224,6 +271,22 @@ public class SFTEngineWindow extends Thread {
         return Display.getDisplayMode();
     }
 
+    public final void setDisplayMode(int width, int height, boolean fullscreen) {
+        if (m == mode.NATIVEDISPLAY) {
+            setDisplayModeNative(width, height, fullscreen);
+        } else if (m == mode.JFRAME) {
+            setDisplayModeJFrame(width, height, fullscreen);
+        }
+    }
+
+    public final void setDisplayModeJFrame(int width, int height, boolean fullscreen) {
+        if (fullscreen) {
+        } else {
+            f.setSize(width, height);
+            c.setBounds(0, 0, width, height);
+        }
+    }
+
     /**
      * Set the display mode to be used 
      * 
@@ -231,7 +294,7 @@ public class SFTEngineWindow extends Thread {
      * @param height The height of the display required
      * @param fullscreen True if we want fullscreen mode
      */
-    public final void setDisplayMode(int width, int height, boolean fullscreen) {
+    public final void setDisplayModeNative(int width, int height, boolean fullscreen) {
 
         // return if requested DisplayMode is already set
         if ((Display.getDisplayMode().getWidth() == width)
@@ -286,7 +349,6 @@ public class SFTEngineWindow extends Thread {
             System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
         }
     }
-    
 
     /**
      * Main method which starts rendering.
@@ -308,11 +370,14 @@ public class SFTEngineWindow extends Thread {
             r.render();
 
             updateFPS();
+            if (m == mode.NATIVEDISPLAY) {
+                Display.update();
 
-            Display.update();
-
-            if (vsync) {
-                Display.sync(vsynchrate); // cap fps to 60fps
+                if (vsync) {
+                    Display.sync(vsynchrate); // cap fps to 60fps
+                }
+            } else if(m == mode.JFRAME) {
+                
             }
 
             try {

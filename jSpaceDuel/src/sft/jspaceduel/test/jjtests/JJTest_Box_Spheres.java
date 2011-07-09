@@ -1,10 +1,9 @@
-package sft.jspaceduel.test;
+package sft.jspaceduel.test.jjtests;
 
 import java.awt.Font;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.glu.GLU;
 import static org.lwjgl.opengl.GL11.*;
 import static sft.sftengine.util.SFT_Util.*;
@@ -18,7 +17,7 @@ import sft.sftengine.util.SFT_Util;
  *
  * @author jj
  */
-public class JJTest implements Renderer {
+public class JJTest_Box_Spheres implements Renderer {
 
     boolean vsync = false;
     boolean fullscreen;
@@ -30,12 +29,12 @@ public class JJTest implements Renderer {
     boolean grabmouse = false;
 
     public static void main(String[] args) throws LWJGLException {
-        new JJTest();
+        new JJTest_Box_Spheres();
     }
     private int mx, my;
     private int dmx, dmy;
 
-    public JJTest() throws LWJGLException {
+    public JJTest_Box_Spheres() throws LWJGLException {
         wi = 800;
         he = 800;
         w = new SFTEngineWindow(this, wi, he, "SFT-Engine-Demo");

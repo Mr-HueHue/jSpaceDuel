@@ -1,7 +1,10 @@
 package sft.sftengine.graphics;
 
 /**
- *
+ * Classes that implement Renderer will be able to render scenes
+ * of the SFTEngineWindow
+ * 
+ * @see SFTEngineWindow
  * @author jj
  */
 public interface Renderer {

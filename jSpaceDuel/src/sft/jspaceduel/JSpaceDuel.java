@@ -1,7 +1,7 @@
 package sft.jspaceduel;
 
 import org.lwjgl.LWJGLException;
-import sft.jspaceduel.test.JJTest;
+
 
 
 /**
@@ -14,6 +14,6 @@ import sft.jspaceduel.test.JJTest;
 public class JSpaceDuel {
 
     public static void main(String[] args) throws LWJGLException {
-        JJTest.main(args);
+        JSpaceDuelManager m = new JSpaceDuelManager();
     }
 }

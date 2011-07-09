@@ -701,9 +701,29 @@ public class SFT_Util {
         return setViewport(0, 0, Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight());
     }
 
+    /**
+     * Change resolution of current viewport
+     * 
+     * @param width
+     * @param height
+     * @return aspect ratio of this width and height
+     */
     public static float viewportReshape(int width, int height) {
         GL11.glViewport(0, 0, width, height);
         return (float) width / (float) height;
+    }
+    
+    /**
+     * Duplicate function of viewportReshape()
+     * 
+     * @param width
+     * @param height
+     * @return aspect ratio of this width and height
+     * 
+     * @see SFT_Util.viewportReshape
+     */
+    public static float resizeViewport(int width, int height) {
+        return viewportReshape(width, height);
     }
 
     /**
