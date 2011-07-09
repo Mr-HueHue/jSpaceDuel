@@ -11,5 +11,20 @@
                 <root id="test.src.dir"/>
             </test-roots>
         </data>
+        <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+            <word>actio</word>
+            <word>body's</word>
+            <word>Collider</word>
+            <word>colliders</word>
+            <word>derivates</word>
+            <word>game's</word>
+            <word>kelvins</word>
+            <word>kg</word>
+            <word>neccesary</word>
+            <word>occured</word>
+            <word>reactio</word>
+            <word>spacecraft's</word>
+            <word>superconstructor</word>
+        </spellchecker-wordlist>
     </configuration>
 </project>
