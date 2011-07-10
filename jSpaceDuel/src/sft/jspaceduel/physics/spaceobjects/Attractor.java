@@ -1,3 +1,5 @@
+package sft.jspaceduel.physics.spaceobjects;
+
 /*
  * This interface is implemented by every object that may attract an other
  * object.
@@ -6,11 +8,7 @@
  * Note that this interface can be used for forces other than gravity as well.
  * It also i.e. supports attractors with differing distance laws or ones that do
  * only attract a few selected types of SpaceObjects.
- */
-package sft.jspaceduel.physics.spaceobjects;
-
-/**
- *
+ * 
  * @author michael
  */
 public interface Attractor {

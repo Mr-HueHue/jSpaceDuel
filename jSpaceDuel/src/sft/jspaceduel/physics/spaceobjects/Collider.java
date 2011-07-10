@@ -8,8 +8,9 @@ package sft.jspaceduel.physics.spaceobjects;
  */
 public interface Collider {   
     /**
-     * This method 
-     * @param object
+     * This method collides the given object with this object if the given object is in this
+     * object's collision radius and this object takes the master role in the collision.
+     * @param object The object that is to be collided with.
      * @return true if an collision has occured.
      */
     public boolean collide(SpaceObject object);

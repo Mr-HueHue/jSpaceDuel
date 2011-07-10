@@ -36,7 +36,7 @@ public class Kinematics implements Serializable {
     /**
      * The current angular velocity in degrees/second.
      */
-    private double omega;
+    public double omega;
     
     /**
      * The angular acceleration that will be applied at the next tick.
