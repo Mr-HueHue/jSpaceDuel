@@ -22,7 +22,6 @@ public class Client implements DataHandler, DataConnection, ConnectionManager {
 
     DataSender sen;
     SendableStorage stor;
-    
     Socket s;
     Connection c;
 
@@ -31,7 +30,7 @@ public class Client implements DataHandler, DataConnection, ConnectionManager {
         c = new Connection(s, this);
         SocketReciever r = new SocketReciever(c, this);
         r.start();
-        
+
         stor = new SendableStorage();
         sen = new DataSender(stor, this, 10000);
         sen.startSending();
@@ -40,35 +39,35 @@ public class Client implements DataHandler, DataConnection, ConnectionManager {
         sen.stopSending();
         System.exit(0);
     }
-    
+
     private void handleinputs() {
         BufferedReader b = new BufferedReader(new InputStreamReader(System.in));
-            boolean a = true;
-            while (a) {
+        boolean a = true;
+        while (a) {
             try {
                 String l = b.readLine();
-                if(l == "quit") {
+                if (l == "quit") {
                     break;
-                }
-                else if (l != null) {
+                } else if (l != null) {
                     String[] interp = l.split(",");
                     String name = interp[0];
                     int posx, posy;
                     if (interp.length == 3) {
-                        try {
-                            posx = Integer.parseInt(interp[1]);
-                            posy = Integer.parseInt(interp[2]);
-                            
-                        } catch (NumberFormatException ex) {
-                            System.out.println("Wrong input. Must be name,posx,posy");
-                            continue;
-                        }
+                    try {
+                    posx = Integer.parseInt(interp[1]);
+                    posy = Integer.parseInt(interp[2]);
+                    
+                    } catch (NumberFormatException ex) {
+                    System.out.println("Wrong input. Must be name,posx,posy");
+                    continue;
+                    }
                     } else {
-                        posx = 0;
-                        posy = 0;
+                    posx = 0;
+                    posy = 0;
                     }
                     TestPhysObject to = new TestPhysObject(name, posx, posy);
-                    System.out.println("enqueuing "+ to.toString());
+                    //ChatMessage to = new ChatMessage(l, new Gschichten());
+                    System.out.println("enqueuing " + to.toString() + " ");
                     stor.add(to);
 
                 } else {
@@ -77,7 +76,7 @@ public class Client implements DataHandler, DataConnection, ConnectionManager {
             } catch (IOException ex) {
                 ex.printStackTrace(System.err);
             }
-            }
+        }
     }
 
     @Override

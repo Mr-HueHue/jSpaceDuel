@@ -32,7 +32,6 @@ public class JJTest_2D_moving_polys implements Renderer {
         wi = 800;
         he = 800;
         w = new SFTEngineWindow(this, wi, he, "SFT-Engine-Demo");
-        w.create();
         w.start();
     }
     /** position of quad */
@@ -97,7 +96,7 @@ public class JJTest_2D_moving_polys implements Renderer {
 
 
 
-        SFT_Util.print2DText(x, -y + 1000, "Obend!  3=========D ~~~~ \\ /^\\ /  (.^.)", sftf);
+        SFT_Util.print2DText(x, y, "Obend!  3=========D ~~~~ \\ /^\\ /  (.^.)", sftf);
 
         SFT_Util.print2DText(0, 0, "/_ ZERO", sftf);
 
@@ -111,9 +110,10 @@ public class JJTest_2D_moving_polys implements Renderer {
     @Override
     public void init() {
 
-        sftf = new SFT_Font(new Font("Times", Font.PLAIN, 15), new float[]{1, 0.5f, 0.5f, 1}, new float[]{0, 0, 0, 0});
 
         w.setVSync(true);
+        
+        sftf = new SFT_Font(new Font("Times", Font.PLAIN, 15), new float[]{1, 0.5f, 0.5f, 1}, new float[]{0, 0, 0, 0});
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
@@ -123,29 +123,29 @@ public class JJTest_2D_moving_polys implements Renderer {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glLoadIdentity();
-        glOrtho(0, 800, 800, 0, 0, 1);
+        GLU.gluOrtho2D(0, wi,0,he);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         glTranslatef(0.375f, 0.375f, 0);
     }
 
     @Override
-    public void update(long delta) {
+    public void update(long milliSecondsSinceLastFrame) {
         // rotate quad
-        rotation += 0.050f * delta;
+        rotation += 0.050f * milliSecondsSinceLastFrame;
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
-            x -= 0.35f * delta;
+            x -= 0.35f * milliSecondsSinceLastFrame;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
-            x += 0.35f * delta;
+            x += 0.35f * milliSecondsSinceLastFrame;
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
-            y -= 0.35f * delta;
+            y += 0.35f * milliSecondsSinceLastFrame;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-            y += 0.35f * delta;
+            y -= 0.35f * milliSecondsSinceLastFrame;
         }
 
         while (Keyboard.next()) {
@@ -181,9 +181,12 @@ public class JJTest_2D_moving_polys implements Renderer {
     public void changeResolution(int width, int height) {
         wi = width;
         he = height;
-        //glViewport(0, 0, wi, he); //NEW
-        //glMatrixMode(GL_PROJECTION);
-        //glLoadIdentity();
-        //GLU.gluOrtho2D(0, wi, he, 0);
+        SFT_Util.viewportReshape(width, height);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        //GLU.gluPerspective(40f, aspectRatio, 1f, 1000f);
+        GLU.gluOrtho2D(0, width, 0, height);
+        // return to modelview matrix
+        glMatrixMode(GL_MODELVIEW);
     }
 }

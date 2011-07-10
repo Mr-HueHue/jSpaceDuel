@@ -21,7 +21,7 @@ public final class JJTest_TriangleMoving implements Renderer {
 
     private int wi = 600, he = 600;
     float rotation = 0;
-    float x = 200, y = 200;
+    float x = 1, y = 0, x1 = 0, y1 = 0;
     float mx = x, my = y;
     float mdx = mx, mdy = my;
     boolean fullscreen, vsync;
@@ -34,7 +34,6 @@ public final class JJTest_TriangleMoving implements Renderer {
 
     public JJTest_TriangleMoving() throws LWJGLException {
         w = new SFTEngineWindow(this, wi, he, "JJTest_TriangleMoving");
-        w.create();
         w.start();
     }
 
@@ -46,14 +45,16 @@ public final class JJTest_TriangleMoving implements Renderer {
 
 
         glBegin(GL_TRIANGLES);
-        glColor3f(1, 0, 0);
-        glVertex3f(-1, -1, 0);
-        glColor3f(0, 0, 1);
-        glVertex3f(1, -1, 0);
-        glColor3f(0, 1, 0);
-        glVertex3f(0, 1, 0);
+        {
+            glColor3f(x, y, 0);
+            glVertex3f(0, 0, 0);
+            glColor3f(1-x, 1-y, 0);
+            glVertex3f(mx, my, 0);
+            glColor3f(x1, 0, y1);
+            glVertex3f(wi, he, 0);
+        }
         glEnd();
-
+        glColor3f(1, 1, 1);
         SFT_Util.print2DText(0, 0, "/_ 0,0", sftf);
     }
 
@@ -71,10 +72,12 @@ public final class JJTest_TriangleMoving implements Renderer {
         glEnable(GL_TEXTURE_2D);
         glDisable(GL_LIGHTING);
         //glEnable(GL_BLEND);
-
+        //glOrtho(0, wi, 0, he, 0, 1);
+        GLU.gluOrtho2D(0, wi, 0, he);
+        
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        GLU.gluOrtho2D(0, 0, y, x);
+        
 
     }
 
@@ -87,19 +90,22 @@ public final class JJTest_TriangleMoving implements Renderer {
 
         mdx = Mouse.getDX();
         mdy = Mouse.getDY();
+        
+        y1 += 0.0001f * mdy*milliSecondsSinceLastFrame;
+        x1 += 0.0001f * mdx*milliSecondsSinceLastFrame;
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
-            x -= 0.35f * milliSecondsSinceLastFrame;
+            x -= 0.001f * milliSecondsSinceLastFrame;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
-            x += 0.35f * milliSecondsSinceLastFrame;
+            x += 0.001f * milliSecondsSinceLastFrame;
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
-            y -= 0.35f * milliSecondsSinceLastFrame;
+            y -= 0.001f * milliSecondsSinceLastFrame;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-            y += 0.35f * milliSecondsSinceLastFrame;
+            y += 0.001f * milliSecondsSinceLastFrame;
         }
 
         while (Keyboard.next()) {
@@ -115,6 +121,30 @@ public final class JJTest_TriangleMoving implements Renderer {
                 }
             }
         }
+        if (y > 1) {
+            y = 1;
+        }
+        if (y < 0) {
+            y = 0;
+        }
+        if (x < 0) {
+            x = 0;
+        }
+        if (x > 1) {
+            x = 1;
+        }
+        if (y1 > 1) {
+            y1 = 1;
+        }
+        if (y1 < 0) {
+            y1 = 0;
+        }
+        if (x1 < 0) {
+            x1 = 0;
+        }
+        if (x1 > 1) {
+            x1 = 1;
+        }
     }
 
     @Override
@@ -123,5 +153,11 @@ public final class JJTest_TriangleMoving implements Renderer {
         he = height;
 
         SFT_Util.viewportReshape(width, height);
+        
+        //glMatrixMode(GL_PROJECTION);
+        GLU.gluOrtho2D(0, wi, 0, he);
+        //glOrtho(0, wi, 0, he, 0, 1);
+        
+        //glMatrixMode(GL_MODELVIEW);
     }
 }

@@ -17,4 +17,9 @@ public class ChatMessage implements Sendable {
     public String getText() {
         return msg;
     }
+    
+    @Override
+    public String toString() {
+        return getText();
+    }
 }

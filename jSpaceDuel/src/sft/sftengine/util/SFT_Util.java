@@ -710,6 +710,7 @@ public class SFT_Util {
      */
     public static float viewportReshape(int width, int height) {
         GL11.glViewport(0, 0, width, height);
+        System.out.println("Setting viewport to " + width + "x" + height);
         return (float) width / (float) height;
     }
     

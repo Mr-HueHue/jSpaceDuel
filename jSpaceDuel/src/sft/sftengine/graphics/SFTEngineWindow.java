@@ -117,8 +117,11 @@ public class SFTEngineWindow extends Thread {
      */
     public void create() {
         try {
-            //Display.create();
-            f.setVisible(true);
+            if (m == mode.NATIVEDISPLAY) {
+                Display.create();
+            } else {
+                f.setVisible(true);
+            }
             Mouse.create();
             Keyboard.create();
         } catch (LWJGLException e) {
@@ -355,7 +358,7 @@ public class SFTEngineWindow extends Thread {
      */
     @Override
     public void start() {
-
+        create();
         getDelta(); // call once before loop to initialise lastFrame
         lastFPS = getTime();
 
@@ -376,8 +379,7 @@ public class SFTEngineWindow extends Thread {
                 if (vsync) {
                     Display.sync(vsynchrate); // cap fps to 60fps
                 }
-            } else if(m == mode.JFRAME) {
-                
+            } else if (m == mode.JFRAME) {
             }
 
             try {

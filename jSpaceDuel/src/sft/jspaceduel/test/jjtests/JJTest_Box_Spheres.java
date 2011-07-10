@@ -38,7 +38,6 @@ public class JJTest_Box_Spheres implements Renderer {
         wi = 800;
         he = 800;
         w = new SFTEngineWindow(this, wi, he, "SFT-Engine-Demo");
-        w.create();
         w.start();
     }
     /** position of quad */
