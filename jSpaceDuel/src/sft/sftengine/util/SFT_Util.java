@@ -51,6 +51,25 @@ public class SFT_Util {
         n |= n >> 16;
         return n + 1;
     }
+    
+    /**
+     * Sets a random color as current drawing color.
+     */
+    public static void setRandomColor() {
+        setColor(randomFloatZeroToOne(), randomFloatZeroToOne(), randomFloatZeroToOne(), 1 );
+    }
+    
+    public static Color generateRandomColor() {
+        return new Color(randomFloatZeroToOne(), randomFloatZeroToOne(), randomFloatZeroToOne(), 1);
+    }
+    
+    /**
+     * Pseudo random number generation
+     * @return a float from 0 to 1
+     */
+    public static float randomFloatZeroToOne() {
+        return (float)Math.random();
+    }
 
     /**
      * Allocate a texture (glGenTextures) and return the handle to it.

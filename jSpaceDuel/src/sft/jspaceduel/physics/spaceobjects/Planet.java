@@ -10,16 +10,16 @@ import sft.jspaceduel.physics.PhysicsEngine;
  * @author michael
  */
 public class Planet extends CelestialBody {
+
     /**
      * This variable stores an ID of the planet's texture, for usage by the graphics engine.
      */
-    int textureID;
-    
+    public int textureID;
     /**
      * This variable stores the planet's radius.
      */
     public double radius;
-    
+
     /**
      * This is the planet's main constructor. It sets the radius and texture ID and passes
      * all other parameters to the superconstructor.
@@ -43,7 +43,7 @@ public class Planet extends CelestialBody {
     public double getRadius() {
         return radius;
     }
-    
+
     /**
      * This method implements the collide() method as required by the Collider interface.
      * It checks if the planet collides with the given object and if it takes the
@@ -58,38 +58,39 @@ public class Planet extends CelestialBody {
     @Override
     public boolean collide(SpaceObject object) {
         //first, we need to check if the object is in range.
-        double[] delta = getPosDelta(object);        
-        double distsquared = delta[0]*delta[0]+delta[1]*delta[1];
-        
-        if(distsquared > getRadius()*getRadius() + object.getRadius()*object.getRadius())
+        double[] delta = getPosDelta(object);
+        double distsquared = delta[0] * delta[0] + delta[1] * delta[1];
+
+        if (distsquared > getRadius() * getRadius() + object.getRadius() * object.getRadius()) {
             return false;
-        
+        }
+
         //then, we need to check the type of the other object to determine if we take the
         //master role in the collision. if so, we absorb the object.
-        if(object instanceof Planet) {
-            if(this.getMass() > object.getMass()) {
+        if (object instanceof Planet) {
+            if (this.getMass() > object.getMass()) {
                 //we absorb a whole planet, which means our surface sureley gets devasted a lot.
-               
+
                 //assuming 10 is a texture ID for a devasted planet.
                 textureID = 10;
-                
+
                 //of course, our radius increases as well. since the planet's materials can be
                 //assumed to be incompressible for non-gas giants, we just need to add the volumes.
-                radius = Math.pow(radius*radius*radius + object.getRadius()*object.getRadius()*object.getRadius(),1/3);
-                
+                radius = Math.pow(radius * radius * radius + object.getRadius() * object.getRadius() * object.getRadius(), 1 / 3);
+
                 //finally absorb the planet.
                 absorb(object);
                 return true;
             }
         }
-        if(object instanceof SpaceCraft) {
-            absorb(object);
-            return true;
-        }
-        
+        /* if(object instanceof SpaceCraft) {
+        absorb(object);
+        return true;
+        }*/
+
         return false;
     }
-    
+
     /**
      * This method is called when setting the planet's mass.
      * If the planet's mass would lie above a certain limit, the planet is replaced
@@ -98,10 +99,10 @@ public class Planet extends CelestialBody {
      */
     @Override
     public void setMass(double mass) {
-     //   if(mass > AstroPhysics.planetToGasGiantConversionLimit()) {
-     //       this.replaceBy(new GasGiant(engine, kin, mass, radius, RandomGasGiantTextureID));
-     //   } else {
+        //   if(mass > AstroPhysics.planetToGasGiantConversionLimit()) {
+        //       this.replaceBy(new GasGiant(engine, kin, mass, radius, RandomGasGiantTextureID));
+        //   } else {
         super.setMass(mass);
-     //   }
+        //   }
     }
 }

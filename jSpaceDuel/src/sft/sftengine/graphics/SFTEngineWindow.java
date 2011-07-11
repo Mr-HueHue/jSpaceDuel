@@ -37,6 +37,7 @@ public class SFTEngineWindow extends Thread {
     private boolean vsync;
     private int vsynchrate;
     mode m;
+    
     /**
      * If the resulution was changed once, set true
      */

@@ -41,7 +41,7 @@ public class PhysicsEngine {
     /**
      * This set contains all attractors that exist within this physics engine's world.
      */
-    private Set<Attractor> attractors;
+    public Set<Attractor> attractors;
     
     /**
      * This set contains all colliders that exist within this physics engine's world.
