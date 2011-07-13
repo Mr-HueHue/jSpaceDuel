@@ -95,6 +95,8 @@ public class JSpaceDuelRenderer implements Renderer {
 
                 } else if (cup.textureID == 2) {
                     glColor3d(0, 1, 0);
+                } else if (cup.textureID == 3) {
+                    glColor3d(0, 0, 1);
                 }
                 glPushMatrix();
                 glTranslated(cup.getPosition()[0], cup.getPosition()[1], 0);
@@ -120,12 +122,16 @@ public class JSpaceDuelRenderer implements Renderer {
         glVertex3d(90, 10, 0);
         }
         glEnd();*/
-        //SFT_Util.setColor(Color.white);
+        SFT_Util.setColor(Color.white);
         double[] delta = manager.p1.getPosDelta(manager.sun);
         SFT_Util.print2DText(0, 0, "Distance: " + Math.sqrt(delta[0] * delta[0] + delta[1] * delta[1]), sftf);
         SFT_Util.print2DText(0, 40, "Distance X: " + delta[0], sftf);
         SFT_Util.print2DText(0, 20, "Distance Y: " + delta[1], sftf);
-
+        SFT_Util.print2DText(250, 20, "Accel X: " + manager.p1.getKinematics().a[0], sftf);
+        SFT_Util.print2DText(250, 0, "Accel Y: " + manager.p1.getKinematics().a[1], sftf);
+        for (SpaceObject o : engine.allObjects) {
+            o.tick(1);
+        }
     }
 
     @Override
@@ -189,12 +195,10 @@ public class JSpaceDuelRenderer implements Renderer {
                     vsync = !vsync;
                     manager.window.setVSync(vsync);
                 } else if (Keyboard.getEventKey() == Keyboard.KEY_Q) {
-                    manager.window.destroy();
+                    manager.window.terminate();
                 }
             }
         }
-
-        SpaceObject[] objlist = engine.allObjects.toArray(new SpaceObject[0]);
 
         for (Attractor a : engine.attractors) {
             for (SpaceObject o : engine.allObjects) {
@@ -204,9 +208,7 @@ public class JSpaceDuelRenderer implements Renderer {
             }
         }
 
-        for (SpaceObject o : engine.allObjects) {
-            o.tick(1);
-        }
+
 
     }
 

@@ -175,7 +175,7 @@ public class JJTest_Box_Spheres implements Renderer {
                     w.setVSync(vsync);
                     vsync = !vsync;
                 } else if (Keyboard.getEventKey() == Keyboard.KEY_Q) {
-                    w.destroy();
+                    w.terminate();
                 }
             }
         }

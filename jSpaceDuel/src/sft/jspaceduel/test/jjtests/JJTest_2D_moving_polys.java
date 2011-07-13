@@ -157,7 +157,7 @@ public class JJTest_2D_moving_polys implements Renderer {
                     vsync = !vsync;
                     w.setVSync(vsync);
                 } else if (Keyboard.getEventKey() == Keyboard.KEY_Q) {
-                    w.destroy();
+                    w.terminate();
                 }
             }
         }

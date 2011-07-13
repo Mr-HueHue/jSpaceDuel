@@ -117,7 +117,7 @@ public final class JJTest_TriangleMoving implements Renderer {
                     vsync = !vsync;
                     w.setVSync(vsync);
                 } else if (Keyboard.getEventKey() == Keyboard.KEY_Q) {
-                    w.destroy();
+                    w.terminate();
                 }
             }
         }

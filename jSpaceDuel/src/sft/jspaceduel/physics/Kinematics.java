@@ -26,7 +26,7 @@ public class Kinematics implements Serializable {
      * The acceleration that will be applied at the next tick as a 2-element
      * double array. Values are given in m/s² and reset to 0 after the tick.
      */
-    private double[] a;
+    public double[] a;
     
     /**
      * The current rotation angle in degrees.
@@ -91,6 +91,9 @@ public class Kinematics implements Serializable {
         v[0]  += a[0]*deltaT;
         v[1]  += a[1]*deltaT;
         omega += omegaDot*deltaT;
+        a[0] = 0;
+        a[1] = 0;
+        omegaDot = 0;
     }
     
     /**

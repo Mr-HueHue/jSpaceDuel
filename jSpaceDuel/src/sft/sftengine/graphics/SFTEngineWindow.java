@@ -416,15 +416,15 @@ public class SFTEngineWindow extends Thread {
     /**
      * Kills the renderer after letting him finish the last frame.
      */
-    @Override
-    public void destroy() {
+    
+    public void terminate() {
         renderenabled = false;
     }
 
     /**
      * Kills the renderer instantly.
      */
-    public void destroyHard() {
+    public void terminateHard() {
         destroyEntities();
     }
 
