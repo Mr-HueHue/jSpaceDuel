@@ -725,12 +725,12 @@ public class SFT_Util {
      * 
      * @param width
      * @param height
-     * @return aspect ratio of this width and height
+     * @return aspect ratio of this width and height (h/w)
      */
     public static float viewportReshape(int width, int height) {
         GL11.glViewport(0, 0, width, height);
         System.out.println("Setting viewport to " + width + "x" + height);
-        return (float) width / (float) height;
+        return (float) height / (float) width;
     }
     
     /**
@@ -923,7 +923,7 @@ public class SFT_Util {
      * @param c The color to set.
      */
     public static void setColor(Color c) {
-        setColor(new float[]{c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha()});
+        setColor(new float[]{(float)c.getRed()/255, (float)c.getGreen()/255, (float)c.getBlue()/255, (float)c.getAlpha()/255});
     }
 
     /**

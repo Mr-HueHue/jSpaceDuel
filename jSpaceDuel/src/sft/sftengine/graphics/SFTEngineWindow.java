@@ -1,9 +1,13 @@
 package sft.sftengine.graphics;
 
+import java.awt.Canvas;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import org.lwjgl.LWJGLException;
+import org.lwjgl.LWJGLUtil;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -37,7 +41,6 @@ public class SFTEngineWindow extends Thread {
     private boolean vsync;
     private int vsynchrate;
     mode m;
-    
     /**
      * If the resulution was changed once, set true
      */
@@ -56,6 +59,10 @@ public class SFTEngineWindow extends Thread {
         this(mode.NATIVEDISPLAY, r, width, heigth, false, title);
     }
 
+    public SFTEngineWindow(mode m, Renderer r, int width, int heigth, String title) throws LWJGLException {
+        this(m, r, width, heigth, false, title);
+    }
+
     private SFTEngineWindow(mode m, Renderer renderer, int width, int heigth, boolean fullscreen, String title) throws LWJGLException {
         SFT_Libraries.addlwjgl();
         this.height = heigth;
@@ -63,6 +70,7 @@ public class SFTEngineWindow extends Thread {
         this.fullscreen = fullscreen;
         this.m = m;
         if (m == mode.JFRAME) {
+            c = new AWTGLCanvas();
             f = new JFrame(title);
             f.setSize(width, height);
             f.setResizable(false);
@@ -75,6 +83,28 @@ public class SFTEngineWindow extends Thread {
                     renderenabled = false;
                 }
             });
+            
+            if (LWJGLUtil.getPlatform() == LWJGLUtil.PLATFORM_WINDOWS) {
+                f.addWindowFocusListener(new WindowAdapter() {
+
+                    @Override
+                    public void windowGainedFocus(WindowEvent e) {
+                        c.requestFocusInWindow();
+                    }
+                });
+            }
+            
+            ComponentAdapter adapter = new ComponentAdapter() {
+                public void componentResized(ComponentEvent e) {
+                    int wid = c.getWidth(), heg = c.getHeight();
+                    //r.changeResolution(wid, heg);
+                }
+            };
+
+            c.addComponentListener(adapter);
+
+
+
         } else if (m == mode.NATIVEDISPLAY) {
             Display.setTitle(title);
         }
@@ -87,6 +117,10 @@ public class SFTEngineWindow extends Thread {
         System.out.println("Current desktop mode:");
         System.out.println(Display.getDesktopDisplayMode().getWidth() + "x" + Display.getDesktopDisplayMode().getHeight() + "x" + Display.getDesktopDisplayMode().getBitsPerPixel() + " " + Display.getDesktopDisplayMode().getFrequency() + "Hz");
         setDisplayMode(width, heigth, fullscreen);
+    }
+
+    public Canvas getCanvas() {
+        return c;
     }
 
     /**
@@ -118,11 +152,12 @@ public class SFTEngineWindow extends Thread {
      */
     public void create() {
         try {
-            if (m == mode.NATIVEDISPLAY) {
-                Display.create();
-            } else {
+            System.out.println("SFT-Engine initialising...");
+            if (m == mode.JFRAME) {
                 f.setVisible(true);
+                Display.setParent(c);
             }
+            Display.create();
             Mouse.create();
             Keyboard.create();
         } catch (LWJGLException e) {
@@ -358,13 +393,13 @@ public class SFTEngineWindow extends Thread {
      * Main method which starts rendering.
      */
     @Override
-    public void start() {
+    public void run() {
         create();
         getDelta(); // call once before loop to initialise lastFrame
         lastFPS = getTime();
 
         r.init();
-
+        
         while (renderenabled && !Display.isCloseRequested() && !Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
             // Rendering loop
 
@@ -416,7 +451,6 @@ public class SFTEngineWindow extends Thread {
     /**
      * Kills the renderer after letting him finish the last frame.
      */
-    
     public void terminate() {
         renderenabled = false;
     }
