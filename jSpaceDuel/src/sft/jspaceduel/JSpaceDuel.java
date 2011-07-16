@@ -1,5 +1,9 @@
 package sft.jspaceduel;
 
+import sft.jspaceduel.game.JSpaceDuelManager;
+import org.lwjgl.LWJGLException;
+
+
 
 /**
  * Main class of jSpaceDuel.
@@ -10,7 +14,8 @@ package sft.jspaceduel;
  */
 public class JSpaceDuel {
 
-    public static void main(String[] args) {
-        throw new UnsupportedOperationException("haha not ready yet...");
+    public static void main(String[] args) throws LWJGLException {
+        JSpaceDuelManager m = new JSpaceDuelManager();
+        m.start();
     }
 }

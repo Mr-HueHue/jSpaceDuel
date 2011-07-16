@@ -1,4 +1,4 @@
-package sft.jspaceduel.sysinit;
+package sft.sftengine.util;
 
 import java.lang.reflect.Field;
 
@@ -9,13 +9,14 @@ import java.lang.reflect.Field;
  */
 public class InitLibraries {
 
+    /**
+     * Unbelievable 1337 function that automatically adds the lwjgl natives to
+     * the java path without having to make complicated startup parameters etc.
+     * 
+     * Please use this function for your LWJGL project, it is very helpful!
+     */
     public static void addlwjgl() {
         try {
-            /*System.out.println(System.getProperty("os.name"));
-            System.out.println(System.getProperty("java.library.path"));
-            System.out.println(System.getProperty("user.dir"));
-             * 
-             */
             
             String osname = System.getProperty("os.name");
             String osfolder = "linux";
@@ -29,8 +30,6 @@ public class InitLibraries {
             
             String oldlibpath = System.getProperty("java.library.path");
             System.setProperty("java.library.path", oldlibpath + seperator+"./lib/lwjgl/native/"+osfolder+seperator);
-            
-            //System.out.println(System.getProperty("java.library.path"));
             
             Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
             fieldSysPath.setAccessible(true);

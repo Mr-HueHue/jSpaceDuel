@@ -13,7 +13,7 @@ import org.lwjgl.opencl.CL;
 import org.lwjgl.opencl.CLContext;
 import org.lwjgl.opencl.CLDevice;
 import org.lwjgl.opencl.CLPlatform;
-import sft.jspaceduel.sysinit.InitLibraries;
+import sft.sftengine.util.SFT_Libraries;
 import static org.lwjgl.opencl.CL10.*;
 
 public class OpenCLTest {
@@ -34,7 +34,7 @@ public class OpenCLTest {
 
     public static void main(String[] args) throws Exception {
         
-        InitLibraries.addlwjgl();
+        SFT_Libraries.addlwjgl();
         
         // initialization
         CL.create();
