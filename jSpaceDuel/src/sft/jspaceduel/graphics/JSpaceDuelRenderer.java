@@ -38,6 +38,8 @@ public class JSpaceDuelRenderer implements Renderer {
     PhysicsEngine engine;
     HashMap<Integer, Color> textcolormap = new HashMap<Integer, Color>();
     float aspect_ratio = 1;
+    
+    float metersperpixel = 1;
 
     public JSpaceDuelRenderer(JSpaceDuelManager m, PhysicsEngine e) {
         manager = m;
@@ -80,7 +82,7 @@ public class JSpaceDuelRenderer implements Renderer {
      */
     double origminx = 0, origminy = 0, origmaxx = 0, origmaxy = 0;
     float xmin, xmax, ymin, ymax, deltax, deltay;
-
+    
     @Override
     public void render() {
         // Clear The Screen And The Depth Buffer
@@ -178,6 +180,8 @@ public class JSpaceDuelRenderer implements Renderer {
         SFT_Util.print2DText(0, 0, "Pos Y: " + pos[1], sftf);
         SFT_Util.print2DText(250, 20, "Accel X: " + manager.movableSun.getKinematics().a[0], sftf);
         SFT_Util.print2DText(250, 0, "Accel Y: " + manager.movableSun.getKinematics().a[1], sftf);*/
+        
+        SFT_Util.print2DText(0, 0, "KinE-Dichte: " + manager.movable, sftf);
         for (SpaceObject o : engine.allObjects) {
             o.tick(1);
         }
@@ -227,13 +231,13 @@ public class JSpaceDuelRenderer implements Renderer {
         rotation += 0.050f * milliSecondsSinceLastFrame;
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
-            manager.movableSun.accelerate(new double[]{-accelkezb * milliSecondsSinceLastFrame * 0.25, 0});
+            manager.movable.accelerate(new double[]{-accelkezb * milliSecondsSinceLastFrame * 0.25, 0});
 
             viewtop -= 0.35f * milliSecondsSinceLastFrame;
             x -= 0.35f * milliSecondsSinceLastFrame;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
-            manager.movableSun.accelerate(new double[]{accelkezb * milliSecondsSinceLastFrame * 0.25, 0});
+            manager.movable.accelerate(new double[]{accelkezb * milliSecondsSinceLastFrame * 0.25, 0});
 
             viewtop += 0.35f * milliSecondsSinceLastFrame;
 
@@ -241,12 +245,12 @@ public class JSpaceDuelRenderer implements Renderer {
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
-            manager.movableSun.accelerate(new double[]{0, accelkezb * milliSecondsSinceLastFrame * 0.25});
+            manager.movable.accelerate(new double[]{0, accelkezb * milliSecondsSinceLastFrame * 0.25});
 
             y += 0.35f * milliSecondsSinceLastFrame;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-            manager.movableSun.accelerate(new double[]{0, -accelkezb * milliSecondsSinceLastFrame * 0.25});
+            manager.movable.accelerate(new double[]{0, -accelkezb * milliSecondsSinceLastFrame * 0.25});
 
             y -= 0.35f * milliSecondsSinceLastFrame;
         }
@@ -263,6 +267,11 @@ public class JSpaceDuelRenderer implements Renderer {
                     manager.window.terminate();
                 }
             }
+        }
+        float zoomstepwidth = 4e-5f;
+        metersperpixel += milliSecondsSinceLastFrame * zoomstepwidth * Mouse.getDWheel();
+        if(metersperpixel < 0) {
+            metersperpixel = 0;
         }
 
         for (Attractor a : engine.attractors) {
@@ -351,14 +360,21 @@ public class JSpaceDuelRenderer implements Renderer {
         ymax = ymean + deltay / 2;*/
 
 
-        float centerx = (float) manager.movableSun.getPosition()[0];
-        float centery = (float) manager.movableSun.getPosition()[1];
+        float centerx = (float) manager.movable.getPosition()[0];
+        float centery = (float) manager.movable.getPosition()[1];
 
         deltax = 2 * Math.max(centerx - xmin, xmax - centerx);
         deltay = 2 * Math.max(centery - ymin, ymax - centery);
 
         float mppmin = Math.max(deltax / wi, deltay / he); //mpp = meters per pixel
-        float mpp = discretizise(mppmin);
+        float mpp;
+        if(false) {
+            mpp = discretizise(mppmin);
+        } else {
+            mpp = metersperpixel;
+        }
+        
+        
         xmin = centerx - mpp * wi / 2;
         xmax = centerx + mpp * wi / 2;
         ymin = centery - mpp * he / 2;
@@ -374,8 +390,9 @@ public class JSpaceDuelRenderer implements Renderer {
     }
 
     private float discretizise(double input) {
+        float maxmpp = 2.5f;
         //final double basezommlevels = 1.4;
         //return (float) Math.pow(basezommlevels, Math.ceil(Math.log(input)/Math.log(basezommlevels)));
-        return Math.max(Math.min((float) input, 2), 0.2f);
+        return Math.max(Math.min((float) input, maxmpp), 0.2f);
     }
 }

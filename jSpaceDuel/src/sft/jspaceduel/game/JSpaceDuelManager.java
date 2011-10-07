@@ -23,7 +23,7 @@ public class JSpaceDuelManager {
     public SFTEngineWindow window;
     JSpaceDuelRenderer renderer;
     int wi = 800, he = 800;
-    public Planet movableSun, earth, mars, moon, sun3;
+    public Planet movable, earth, mars, moon, sun3;
     public String version = "indev";
     
     public JSpaceDuelManager() throws LWJGLException {
@@ -36,12 +36,13 @@ public class JSpaceDuelManager {
     }
 
     private void generateTestSpaceOjects(PhysicsEngine p) {
-        movableSun = new Planet(p, new Kinematics(0, 0, 0, 0, 0, 2), 2e12, 60, 0);
-        earth = new Planet(p, new Kinematics(200, 200, 0, 0, 0, 0.1), 0, 30, 0);
-        mars = new Planet(p, new Kinematics(-200, -200, 0, 0, 0, -0.1), 0, 30, 0);
+        movable = new Planet(p, new Kinematics(1.496e11, 0, 0, 2.978e4, 0, 2), 0, 20, 0);
+        sun3 = new Planet(p, new Kinematics(0, 0, 0, 0, 0, -2), 1.99e30, 50, 0);
+        //earth = new Planet(p, new Kinematics(200, 200, 0, 0, 0, 0.1), 0, 30, 0);
+        //mars = new Planet(p, new Kinematics(-200, -200, 0, 0, 0, -0.1), 0, 30, 0);
         //moon = new Planet(p, new Kinematics(-150, -150, 0, -1, 0, -0.8), 1, 20, 0);
         //sun3 = new Planet(p, new Kinematics(150, 150, 0, 1, 0, 0.8), 1, 20, 0);
-        Random r = new Random();
+        /*Random r = new Random();
         for (int i = 0; i < 20; i++) {
             int x = r.nextInt(1000)-500, y=r.nextInt(1000)-500;
             double omega = r.nextDouble();
@@ -50,15 +51,15 @@ public class JSpaceDuelManager {
             double mass = r.nextInt(50)*Math.pow(10, masse);
             int radius = r.nextInt(39)+1;
             new Planet(p, kin, mass, radius, r.nextInt(2)+4);
-        }
+        }*/
     }
     
     public void glInit() {
-        movableSun.textureID = SFT_Util.makeTexture("./data/images/sun.png");
-        earth.textureID = SFT_Util.makeTexture("./data/images/earth.png");
-        mars.textureID = SFT_Util.makeTexture("./data/images/mars.png");
+        movable.textureID = SFT_Util.makeTexture("./data/images/earth.png");
+        //earth.textureID = SFT_Util.makeTexture("./data/images/sun.png");
+        //mars.textureID = SFT_Util.makeTexture("./data/images/mars.png");
         //moon.textureID = SFT_Util.makeTexture("./data/images/moon.png");
-        //sun3.textureID = SFT_Util.makeTexture("./data/images/sun.png");
+        sun3.textureID = SFT_Util.makeTexture("./data/images/sun.png");
     }
 
     public void changeResolution(int newwi, int newhe) {
